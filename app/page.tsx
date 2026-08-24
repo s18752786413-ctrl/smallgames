@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 type Player = { id: number; name: string; chats: number; supports: number };
 type ChasePlayer = { id: number; name: string; normalScore: number; boostScore: number; boostTool: string };
-type GameType = 'newcomer' | 'chase';
+type GameType = 'newcomer' | 'chase' | 'duo';
 
 const defaultPlayers: Player[] = Array.from({ length: 8 }, (_, index) => ({
   id: index + 1, name: '', chats: 0, supports: 0,
@@ -41,6 +41,7 @@ export default function Home() {
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [remainingSeconds, setRemainingSeconds] = useState(300);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [adjustSeconds, setAdjustSeconds] = useState(10);
 
   useEffect(() => {
     try {
@@ -146,8 +147,17 @@ export default function Home() {
     setRemainingSeconds(configuredTimerSeconds);
   }
 
+  function adjustTimer(direction: 1 | -1) {
+    const amount = Math.max(1, Math.min(999, Number.isFinite(adjustSeconds) ? adjustSeconds : 10));
+    setAdjustSeconds(amount);
+    setRemainingSeconds((current) => Math.max(0, Math.min(5999, current + direction * amount)));
+  }
+
+  const gameEyebrow = activeGame === 'duo' ? 'DUO · WORD CHALLENGE' : activeGame === 'chase' ? 'CHASE · INTERACTION' : 'NEWCOMER · INTERACTION';
+  const gameTitle = activeGame === 'duo' ? '双人默契猜词挑战' : activeGame === 'chase' ? '追分互动小游戏' : '拉新互动小游戏';
+
   return (
-    <main className={`app-shell ${gameMenuOpen ? 'menu-open' : 'menu-closed'}`}>
+    <main className={`app-shell ${gameMenuOpen ? 'menu-open' : 'menu-closed'} ${activeGame === 'duo' ? 'duo-theme' : ''}`}>
       <aside className="game-nav" aria-label="游戏选择" aria-hidden={!gameMenuOpen}>
         <div className="brand-mark">甜</div>
         <div className="nav-title">互动游戏</div>
@@ -157,6 +167,9 @@ export default function Home() {
         <button className={`game-item ${activeGame === 'chase' ? 'active' : ''}`} type="button" onClick={() => selectGame('chase')} tabIndex={gameMenuOpen ? 0 : -1}>
           <span className="game-icon">追</span><span>追分互动</span>
         </button>
+        <button className={`game-item ${activeGame === 'duo' ? 'active' : ''}`} type="button" onClick={() => selectGame('duo')} tabIndex={gameMenuOpen ? 0 : -1}>
+          <span className="game-icon">契</span><span>双人默契猜词</span>
+        </button>
         <div className="autosave"><span /> 本机自动保存</div>
       </aside>
 
@@ -164,26 +177,74 @@ export default function Home() {
         <header className="topbar">
           <div className="title-group">
             {!gameMenuOpen && <button className="choose-game-button" type="button" onClick={() => setGameMenuOpen(true)} aria-label="打开游戏选择菜单">☰ <span>选择游戏</span></button>}
-            <div><p className="eyebrow">{activeGame === 'chase' ? 'CHASE · INTERACTION' : 'NEWCOMER · INTERACTION'}</p><h1>{activeGame === 'chase' ? '追分互动小游戏' : '拉新互动小游戏'}</h1></div>
+            <div><p className="eyebrow">{gameEyebrow}</p><h1>{gameTitle}</h1></div>
           </div>
           <div className="top-actions">
-            <div className="mic-controls" aria-label="麦位数量控制">
+            {activeGame !== 'duo' && <div className="mic-controls" aria-label="麦位数量控制">
               <button type="button" onClick={() => activeGame === 'chase' ? setChaseVisibleCount((count) => Math.max(1, count - 1)) : setVisibleCount((count) => Math.max(1, count - 1))} disabled={currentVisibleCount === 1} aria-label="减少一个麦位">−</button>
               <span><b>{currentVisibleCount}</b>/8麦</span>
               <button type="button" onClick={() => activeGame === 'chase' ? setChaseVisibleCount((count) => Math.min(8, count + 1)) : setVisibleCount((count) => Math.min(8, count + 1))} disabled={currentVisibleCount === 8}>＋ 添加麦位</button>
-            </div>
-            {activeGame === 'chase' ? <>
+            </div>}
+            {activeGame === 'duo' ? <>
+              <div className="rule-chip duo-support-chip"><b>＋10s</b> 支持</div>
+              <div className="rule-chip duo-stomp-chip"><b>−10s</b> 猛踩</div>
+            </> : activeGame === 'chase' ? <>
               <div className="rule-chip"><b>×1</b> 普通</div>
               <div className="rule-chip support"><b>×2</b> 加速</div>
             </> : <>
               <div className="rule-chip"><b>＋2</b> 交流</div>
               <div className="rule-chip support"><b>＋10</b> 支持</div>
             </>}
-            <button className="reset-button" type="button" onClick={resetGame}>重开一局</button>
+            {activeGame !== 'duo' && <button className="reset-button" type="button" onClick={resetGame}>重开一局</button>}
           </div>
         </header>
 
-        <div className="content-grid">
+        {activeGame === 'duo' ? <div className="duo-board">
+          <section className="duo-hero">
+            <p>双向默契 · 趣味对局 · 全民可互动</p>
+            <div className={`duo-timer ${remainingSeconds === 0 ? 'timer-done' : ''}`}>
+              <div className="duo-timer-status">{remainingSeconds === 0 ? '时间到' : isTimerRunning ? '挑战进行中' : '准备挑战'}</div>
+              <div className="duo-timer-display">{timerDisplayMinutes}<i>:</i>{timerDisplaySeconds}</div>
+              <div className="duo-timer-settings">
+                <label><span>分钟</span><input aria-label="倒计时分钟" type="number" min="0" max="99" value={timerMinutes} disabled={isTimerRunning} onChange={(event) => updateTimer(Number(event.target.value), timerSeconds)} /></label>
+                <label><span>秒钟</span><input aria-label="倒计时秒钟" type="number" min="0" max="59" value={timerSeconds} disabled={isTimerRunning} onChange={(event) => updateTimer(timerMinutes, Number(event.target.value))} /></label>
+              </div>
+              <div className="duo-timer-actions">
+                <button className="duo-start" type="button" onClick={toggleTimer} disabled={configuredTimerSeconds === 0}>{isTimerRunning ? '暂停' : remainingSeconds > 0 && remainingSeconds < configuredTimerSeconds ? '继续' : '开始挑战'}</button>
+                <button type="button" onClick={resetTimer}>重置</button>
+              </div>
+            </div>
+          </section>
+
+          <section className="duo-adjust-card">
+            <div><span>实时加减时长</span><em>计时中也可操作</em></div>
+            <label><input aria-label="每次调整秒数" type="number" min="1" max="999" value={adjustSeconds} onChange={(event) => setAdjustSeconds(Math.max(1, Math.min(999, Number(event.target.value) || 1)))} /><span>秒／次</span></label>
+            <div className="duo-adjust-buttons">
+              <button className="subtract" type="button" onClick={() => adjustTimer(-1)}>− {adjustSeconds}s</button>
+              <button className="add" type="button" onClick={() => adjustTimer(1)}>＋ {adjustSeconds}s</button>
+            </div>
+          </section>
+
+          <section className="duo-rule-card support-side">
+            <div className="duo-rule-heading"><span>SUPPORT</span><h2>支持类</h2></div>
+            <ul>
+              <li><b>加油鸭</b><strong>＋10s</strong></li>
+              <li><b>全麦爱有呦</b><strong>换回词库</strong></li>
+              <li><b>礼花筒</b><strong>免惩</strong></li>
+            </ul>
+          </section>
+
+          <section className="duo-rule-card stomp-side">
+            <div className="duo-rule-heading"><span>STOMP</span><h2>猛踩类</h2></div>
+            <ul>
+              <li><b>送你花花</b><strong>−10s</strong></li>
+              <li><b>全麦棒棒糖</b><strong>换词库</strong></li>
+              <li><b>星星点灯</b><strong>替换高阶惩罚</strong></li>
+            </ul>
+          </section>
+
+          <div className="duo-footer-note">轻互动造氛围　｜　无压力娱乐对局</div>
+        </div> : <div className="content-grid">
           <section className={`scoreboard ${activeGame === 'chase' ? 'chase-scoreboard' : ''}`} aria-label="拍档积分榜">
             {activeGame === 'chase' ? <>
               <div className="table-head chase-grid"><span>麦位</span><span>拍档名</span><span>总分</span><span>普通分数</span><span>加速分数</span><span>加速工具</span></div>
@@ -260,7 +321,7 @@ export default function Home() {
             </section>
 
           </aside>
-        </div>
+        </div>}
       </section>
 
     </main>
