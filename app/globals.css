@@ -74,7 +74,7 @@ h1 { margin:0; font-family:Georgia,"Microsoft YaHei",serif; font-size:clamp(38px
 .side-panel section { border-radius:20px; }
 .result-card { padding:19px; color:white; background:linear-gradient(145deg,#322743,#4f3a69); box-shadow:0 14px 32px rgba(52,38,70,.2); text-align:center; overflow:hidden; }
 .result-card.has-result { background:radial-gradient(circle at 85% 10%,rgba(255,255,255,.18),transparent 30%),linear-gradient(145deg,#ff7b88,#c83e68); }
-.result-label { opacity:.72; font-size:11px; font-weight:700; letter-spacing:2px; }
+.result-label { color:#fff; opacity:1; font-size:clamp(16px,1.25vw,20px); font-weight:900; line-height:1.15; letter-spacing:3px; text-shadow:0 2px 8px rgba(19,10,32,.38); }
 .result-score { margin:8px 0 0; font-family:Georgia,serif; font-size:46px; line-height:.9; font-weight:800; }
 .result-score small { margin-left:3px; font-family:inherit; font-size:12px; }
 .result-name { margin-top:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:18px; font-weight:800; }
@@ -114,4 +114,3 @@ h1 { margin:0; font-family:Georgia,"Microsoft YaHei",serif; font-size:clamp(38px
 
 @media (max-aspect-ratio:16/9) { body { overflow-x:auto; } .app-shell { margin:0; } }
 @media (max-height:700px) { .game-stage { padding-top:22px; padding-bottom:22px; } .topbar { height:69px; } .content-grid { height:calc(100% - 69px); } .game-nav { padding-top:25px; } }
-
