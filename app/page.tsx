@@ -116,7 +116,7 @@ export default function Home() {
   const lowestChaseNames = activeChaseIndexes.filter((index) => chaseScores[index] === lowestChaseScore).map((index) => chasePlayers[index].name.trim());
   const visibleTalentPlayers = talentPlayers.slice(0, talentVisibleCount);
   const talentTop3 = useMemo(() => talentPlayers.slice(0, talentVisibleCount)
-    .filter((player) => player.name.trim() || player.score > 0)
+    .filter((player) => player.score >= 1000)
     .sort((a, b) => b.score - a.score || a.id - b.id)
     .slice(0, 3), [talentPlayers, talentVisibleCount]);
 
@@ -271,7 +271,7 @@ export default function Home() {
                   </div>;
                 })}
               </div>
-              <p>1000分为满条，分数可继续累计</p>
+              <p>达到1000分后进入TOP3，分数可继续累计</p>
             </section>
 
             <section className="talent-rules-card">
