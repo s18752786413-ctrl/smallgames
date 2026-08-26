@@ -181,6 +181,78 @@ h1 { margin:0; font-family:Georgia,"Microsoft YaHei",serif; font-size:clamp(38px
 .stomp-side li strong { color:#ef997a; }
 .duo-footer-note { grid-area:footer; color:#c5aa6b; text-align:center; font-size:11px; font-weight:800; letter-spacing:4px; }
 
+/* 才艺考核：粉金舞台、人气进度与实时前三名 */
+.app-shell.talent-theme { --talent-wine:#7d123f; --talent-rose:#d92f71; --talent-gold:#ffd580; color:#fff7ec; background:#260818; }
+.talent-theme .game-nav { position:relative; z-index:3; color:#fff4dc; border-right:1px solid rgba(255,207,125,.36); background:radial-gradient(circle at 30% 5%,rgba(255,169,202,.22),transparent 22%),linear-gradient(180deg,#9f1b55 0%,#520d31 58%,#26071b 100%); }
+.talent-theme .game-item.active { color:#6a1039; background:linear-gradient(135deg,#fff6dc,#f4bd62); box-shadow:0 0 26px rgba(255,202,105,.34); }
+.talent-theme .game-item.active .game-icon { color:#fff2c7; background:linear-gradient(145deg,#bd275f,#741238); }
+.talent-theme .game-stage { position:relative; z-index:1; isolation:isolate; overflow:hidden; }
+.talent-theme .game-stage::before { content:''; position:absolute; z-index:-2; inset:0; background-image:linear-gradient(90deg,rgba(34,4,20,.82),rgba(70,8,36,.65) 45%,rgba(31,4,19,.82)),url('./talent-stage-bg.png'); background-size:cover; background-position:center; }
+.talent-theme .game-stage::after { content:''; position:absolute; z-index:-1; inset:0; background:radial-gradient(circle at 50% 18%,rgba(255,176,207,.2),transparent 24%),linear-gradient(180deg,rgba(28,4,18,.12),rgba(28,4,18,.5)); pointer-events:none; }
+.talent-theme .eyebrow { color:#ffd47c; text-shadow:0 2px 12px rgba(0,0,0,.45); }
+.talent-theme h1 { color:#fff6da; background:linear-gradient(180deg,#fffceb,#ffd67f 58%,#e49037); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 6px 22px rgba(59,0,25,.5); }
+.talent-theme .choose-game-button { color:#8e1949; border-color:#f4c36e; background:#fff5db; }
+.talent-theme .mic-controls { border-color:rgba(255,209,127,.65); background:rgba(61,7,33,.82); box-shadow:0 8px 24px rgba(22,0,10,.35); }
+.talent-theme .mic-controls button { color:#ffe4a6; background:rgba(255,255,255,.06); }
+.talent-theme .mic-controls button:first-child,.talent-theme .mic-controls button:last-child { border-color:rgba(255,210,127,.22); }
+.talent-theme .mic-controls span { color:#f4c9d8; }
+.talent-theme .mic-controls span b { color:#ffe19d; }
+.talent-theme .rule-chip { color:#f7cada; border-color:rgba(255,207,126,.55); background:rgba(61,7,33,.82); box-shadow:0 8px 24px rgba(22,0,10,.35); }
+.talent-theme .rule-chip b { color:#ffd778; }
+.talent-theme .talent-pop-chip b { color:#ff92ba; }
+.talent-theme .reset-button { color:#691137; background:linear-gradient(135deg,#fff3c8,#eeb855); box-shadow:0 8px 24px rgba(22,0,10,.34); }
+
+.talent-board { height:calc(100% - 80px); min-height:0; display:grid; grid-template-columns:minmax(650px,1fr) 326px; gap:18px; }
+.talent-ranking { min-width:0; min-height:0; overflow:hidden; border:1px solid rgba(255,214,142,.5); border-radius:24px; background:linear-gradient(145deg,rgba(75,10,41,.84),rgba(33,5,22,.88)); box-shadow:inset 0 0 45px rgba(255,172,205,.05),0 20px 55px rgba(18,0,10,.38); backdrop-filter:blur(9px); }
+.talent-table-head,.talent-player-row { display:grid; grid-template-columns:70px minmax(120px,.8fr) minmax(220px,1.65fr) minmax(210px,1.15fr); align-items:center; column-gap:14px; }
+.talent-table-head { height:48px; padding:0 18px; color:#ffdca1; border-bottom:1px solid rgba(255,219,157,.26); background:rgba(37,3,20,.58); font-size:12px; font-weight:900; letter-spacing:1px; }
+.talent-table-head span:nth-child(n+3) { text-align:center; }
+.talent-player-list { height:calc(100% - 48px); display:grid; }
+.talent-player-row { position:relative; min-height:52px; padding:7px 18px; border-bottom:1px solid rgba(255,230,201,.12); background:linear-gradient(90deg,rgba(255,255,255,.015),rgba(255,255,255,.045),rgba(255,255,255,.015)); }
+.talent-player-row:last-child { border-bottom:0; }
+.talent-player-row.talent-rank-1 { background:linear-gradient(90deg,rgba(255,201,91,.2),rgba(255,245,204,.07),rgba(255,201,91,.08)); }
+.talent-player-row.talent-rank-2 { background:linear-gradient(90deg,rgba(255,190,218,.15),rgba(255,255,255,.045),rgba(255,190,218,.06)); }
+.talent-player-row.talent-rank-3 { background:linear-gradient(90deg,rgba(223,123,76,.14),rgba(255,255,255,.035),rgba(223,123,76,.05)); }
+.talent-seat { display:flex; align-items:center; gap:7px; color:#efcbd9; font-size:11px; font-weight:800; }
+.talent-seat span { width:36px; height:36px; border:1px solid rgba(255,216,143,.4); border-radius:12px; display:grid; place-items:center; color:#5d0b31; background:linear-gradient(145deg,#fff5d5,#e6ad4d); box-shadow:0 4px 14px rgba(0,0,0,.22); font-family:Georgia,serif; font-size:18px; font-weight:900; }
+.talent-name-input { width:100%; height:38px; padding:0 12px; border:1px solid transparent; border-radius:11px; outline:0; color:#fff7eb; background:rgba(255,255,255,.035); font-size:13px; font-weight:900; }
+.talent-name-input::placeholder { color:#bc91a2; font-weight:500; }
+.talent-name-input:focus { border-color:#ffd379; background:rgba(35,2,18,.72); box-shadow:0 0 0 3px rgba(255,203,111,.12); }
+.talent-progress-wrap { display:grid; grid-template-columns:minmax(110px,1fr) 78px; align-items:center; gap:9px; }
+.talent-progress-track { position:relative; height:18px; padding:3px; overflow:hidden; border:1px solid rgba(255,215,144,.4); border-radius:999px; background:rgba(20,2,12,.72); box-shadow:inset 0 2px 7px rgba(0,0,0,.35); }
+.talent-progress-track i { display:block; height:100%; min-width:0; border-radius:999px; background:linear-gradient(90deg,#d62a6d,#ff77a6 42%,#ffd064 100%); box-shadow:0 0 14px rgba(255,96,155,.58); transition:width .28s ease; }
+.talent-progress-wrap small { color:#edc3d2; font-size:9px; white-space:nowrap; }
+.talent-counter { height:38px; display:grid; grid-template-columns:48px minmax(72px,1fr) 48px; overflow:hidden; border:1px solid rgba(255,213,139,.38); border-radius:11px; background:rgba(29,2,16,.74); }
+.talent-counter button { border:0; color:#ffe19a; background:rgba(255,255,255,.055); cursor:pointer; font-size:10px; font-weight:900; }
+.talent-counter button:hover { color:#5a0b2e; background:#ffd476; }
+.talent-counter input { width:100%; min-width:0; border:0; border-right:1px solid rgba(255,215,146,.2); border-left:1px solid rgba(255,215,146,.2); outline:0; color:#fff7df; background:transparent; text-align:center; font-size:15px; font-weight:900; font-variant-numeric:tabular-nums; -moz-appearance:textfield; }
+.talent-counter input::-webkit-inner-spin-button,.talent-counter input::-webkit-outer-spin-button { margin:0; -webkit-appearance:none; }
+
+.talent-side-panel { min-height:0; display:grid; grid-template-rows:minmax(190px,.78fr) minmax(270px,1.22fr); gap:14px; }
+.talent-side-panel section { border:1px solid rgba(255,218,148,.5); border-radius:22px; background:linear-gradient(150deg,rgba(81,11,44,.88),rgba(31,3,20,.92)); box-shadow:inset 0 0 30px rgba(255,183,213,.05),0 18px 44px rgba(18,0,10,.35); backdrop-filter:blur(9px); }
+.talent-top-card { padding:16px; }
+.talent-card-title { display:flex; align-items:flex-end; justify-content:space-between; padding-bottom:10px; border-bottom:1px solid rgba(255,218,152,.22); }
+.talent-card-title span { color:#fff0c7; font-size:16px; font-weight:900; letter-spacing:1px; }
+.talent-card-title em { color:#d892ad; font-size:8px; font-style:normal; font-weight:800; letter-spacing:2px; }
+.talent-podium { margin-top:11px; display:grid; gap:7px; }
+.talent-top-item { min-height:42px; padding:5px 8px; border:1px solid rgba(255,222,158,.18); border-radius:12px; display:grid; grid-template-columns:32px 1fr auto; align-items:center; gap:8px; background:rgba(255,255,255,.035); }
+.talent-top-item>strong { width:30px; height:30px; border-radius:50%; display:grid; place-items:center; color:#601033; background:linear-gradient(145deg,#fff5d1,#e7af4c); font-family:Georgia,serif; font-size:17px; }
+.talent-top-item>div { min-width:0; display:flex; flex-direction:column; }
+.talent-top-item b { overflow:hidden; color:#fff6e4; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
+.talent-top-item span { color:#eebfd1; font-size:9px; }
+.talent-top-item>em { color:#ffd67e; font-size:11px; font-style:normal; font-weight:900; }
+.talent-top-item.top-2>strong { color:#5c3850; background:linear-gradient(145deg,#fff6fb,#d7b9ca); }
+.talent-top-item.top-3>strong { color:#5f261f; background:linear-gradient(145deg,#ffd7b5,#c87852); }
+.talent-top-card>p { margin:9px 0 0; color:#ddb4c5; font-size:9px; text-align:center; letter-spacing:1px; }
+.talent-rules-card { min-height:0; padding:16px; overflow:hidden; }
+.talent-route { margin-top:11px; padding:11px 12px; border:1px solid rgba(255,218,149,.22); border-radius:14px; background:rgba(255,255,255,.035); }
+.talent-route h2 { margin:0 0 6px; color:#ffd879; font-size:15px; }
+.talent-route p { margin:0; color:#fff0e7; font-size:10px; font-weight:700; line-height:1.65; }
+.talent-route strong { display:block; margin-top:6px; color:#ff9cc1; font-size:11px; }
+.talent-route.popularity-route { border-color:rgba(255,135,182,.32); }
+.talent-route.popularity-route h2 { color:#ff9ac0; }
+.talent-route.popularity-route strong { color:#ffd77f; }
+
 @media (max-aspect-ratio:16/9) { body { overflow-x:auto; } .app-shell { margin:0; } }
 @media (max-height:700px) { .game-stage { padding-top:22px; padding-bottom:22px; } .topbar { height:69px; } .content-grid { height:calc(100% - 69px); } .game-nav { padding-top:25px; } }
 

@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 type Player = { id: number; name: string; chats: number; supports: number };
 type ChasePlayer = { id: number; name: string; normalScore: number; boostScore: number; boostTool: string };
-type GameType = 'newcomer' | 'chase' | 'duo';
+type TalentPlayer = { id: number; name: string; score: number };
+type GameType = 'newcomer' | 'chase' | 'duo' | 'talent';
 
 const defaultPlayers: Player[] = Array.from({ length: 8 }, (_, index) => ({
   id: index + 1, name: '', chats: 0, supports: 0,
@@ -12,6 +13,10 @@ const defaultPlayers: Player[] = Array.from({ length: 8 }, (_, index) => ({
 
 const defaultChasePlayers: ChasePlayer[] = Array.from({ length: 8 }, (_, index) => ({
   id: index + 1, name: '', normalScore: 0, boostScore: 0, boostTool: '',
+}));
+
+const defaultTalentPlayers: TalentPlayer[] = Array.from({ length: 8 }, (_, index) => ({
+  id: index + 1, name: '', score: 0,
 }));
 
 function clamp(value: number) {
@@ -29,14 +34,25 @@ function Counter({ value, label, onChange }: { value: number; label: string; onC
   );
 }
 
+function TalentCounter({ value, label, onChange }: { value: number; label: string; onChange: (next: number) => void }) {
+  const setScore = (next: number) => onChange(Math.max(0, Math.min(999999, Number.isFinite(next) ? next : 0)));
+  return <div className="talent-counter">
+    <button type="button" aria-label={`${label}减1分`} onClick={() => setScore(value - 1)}>−1</button>
+    <input aria-label={label} inputMode="numeric" min="0" max="999999" type="number" value={value} onChange={(event) => setScore(Number(event.target.value))} />
+    <button type="button" aria-label={`${label}加1分`} onClick={() => setScore(value + 1)}>＋1</button>
+  </div>;
+}
+
 export default function Home() {
   const [activeGame, setActiveGame] = useState<GameType>('newcomer');
   const [players, setPlayers] = useState<Player[]>(defaultPlayers);
   const [chasePlayers, setChasePlayers] = useState<ChasePlayer[]>(defaultChasePlayers);
+  const [talentPlayers, setTalentPlayers] = useState<TalentPlayer[]>(defaultTalentPlayers);
   const [loaded, setLoaded] = useState(false);
   const [gameMenuOpen, setGameMenuOpen] = useState(true);
   const [visibleCount, setVisibleCount] = useState(3);
   const [chaseVisibleCount, setChaseVisibleCount] = useState(3);
+  const [talentVisibleCount, setTalentVisibleCount] = useState(3);
   const [timerMinutes, setTimerMinutes] = useState(5);
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [remainingSeconds, setRemainingSeconds] = useState(300);
@@ -53,6 +69,10 @@ export default function Home() {
       if (savedChasePlayers) setChasePlayers(JSON.parse(savedChasePlayers));
       const savedChaseVisibleCount = Number(window.localStorage.getItem('chase-game-visible-count'));
       if (savedChaseVisibleCount >= 1 && savedChaseVisibleCount <= 8) setChaseVisibleCount(savedChaseVisibleCount);
+      const savedTalentPlayers = window.localStorage.getItem('talent-game-players');
+      if (savedTalentPlayers) setTalentPlayers(JSON.parse(savedTalentPlayers));
+      const savedTalentVisibleCount = Number(window.localStorage.getItem('talent-game-visible-count'));
+      if (savedTalentVisibleCount >= 1 && savedTalentVisibleCount <= 8) setTalentVisibleCount(savedTalentVisibleCount);
     } catch {
       // 本地记录不可用时继续使用空白表，不影响现场计分。
     }
@@ -65,7 +85,9 @@ export default function Home() {
     window.localStorage.setItem('newcomer-game-visible-count', String(visibleCount));
     window.localStorage.setItem('chase-game-players', JSON.stringify(chasePlayers));
     window.localStorage.setItem('chase-game-visible-count', String(chaseVisibleCount));
-  }, [players, visibleCount, chasePlayers, chaseVisibleCount, loaded]);
+    window.localStorage.setItem('talent-game-players', JSON.stringify(talentPlayers));
+    window.localStorage.setItem('talent-game-visible-count', String(talentVisibleCount));
+  }, [players, visibleCount, chasePlayers, chaseVisibleCount, talentPlayers, talentVisibleCount, loaded]);
 
   useEffect(() => {
     if (!isTimerRunning) return;
@@ -92,6 +114,11 @@ export default function Home() {
   const activeChaseIndexes = visibleChasePlayers.map((player, index) => player.name.trim() ? index : -1).filter((index) => index >= 0);
   const lowestChaseScore = activeChaseIndexes.length ? Math.min(...activeChaseIndexes.map((index) => chaseScores[index])) : null;
   const lowestChaseNames = activeChaseIndexes.filter((index) => chaseScores[index] === lowestChaseScore).map((index) => chasePlayers[index].name.trim());
+  const visibleTalentPlayers = talentPlayers.slice(0, talentVisibleCount);
+  const talentTop3 = useMemo(() => talentPlayers.slice(0, talentVisibleCount)
+    .filter((player) => player.name.trim() || player.score > 0)
+    .sort((a, b) => b.score - a.score || a.id - b.id)
+    .slice(0, 3), [talentPlayers, talentVisibleCount]);
 
   function updatePlayer(id: number, patch: Partial<Player>) {
     setPlayers((current) => current.map((player) => player.id === id ? { ...player, ...patch } : player));
@@ -99,6 +126,10 @@ export default function Home() {
 
   function updateChasePlayer(id: number, patch: Partial<ChasePlayer>) {
     setChasePlayers((current) => current.map((player) => player.id === id ? { ...player, ...patch } : player));
+  }
+
+  function updateTalentPlayer(id: number, patch: Partial<TalentPlayer>) {
+    setTalentPlayers((current) => current.map((player) => player.id === id ? { ...player, ...patch } : player));
   }
 
   function selectGame(game: GameType) {
@@ -114,10 +145,11 @@ export default function Home() {
   function resetGame() {
     if (!window.confirm('确认清空本轮全部拍档名和积分吗？')) return;
     if (activeGame === 'chase') setChasePlayers(defaultChasePlayers);
+    else if (activeGame === 'talent') setTalentPlayers(defaultTalentPlayers);
     else setPlayers(defaultPlayers);
   }
 
-  const currentVisibleCount = activeGame === 'chase' ? chaseVisibleCount : visibleCount;
+  const currentVisibleCount = activeGame === 'talent' ? talentVisibleCount : activeGame === 'chase' ? chaseVisibleCount : visibleCount;
   const currentLowestScore = activeGame === 'chase' ? lowestChaseScore : lowestScore;
   const currentLowestNames = activeGame === 'chase' ? lowestChaseNames : lowestNames;
 
@@ -153,11 +185,11 @@ export default function Home() {
     setRemainingSeconds((current) => Math.max(0, Math.min(5999, current + direction * amount)));
   }
 
-  const gameEyebrow = activeGame === 'duo' ? 'DUO · WORD CHALLENGE' : activeGame === 'chase' ? 'CHASE · INTERACTION' : 'NEWCOMER · INTERACTION';
-  const gameTitle = activeGame === 'duo' ? '双人默契猜词挑战' : activeGame === 'chase' ? '追分互动小游戏' : '拉新互动小游戏';
+  const gameEyebrow = activeGame === 'talent' ? 'TALENT · ASSESSMENT' : activeGame === 'duo' ? 'DUO · WORD CHALLENGE' : activeGame === 'chase' ? 'CHASE · INTERACTION' : 'NEWCOMER · INTERACTION';
+  const gameTitle = activeGame === 'talent' ? '才艺考核' : activeGame === 'duo' ? '双人默契猜词挑战' : activeGame === 'chase' ? '追分互动小游戏' : '拉新互动小游戏';
 
   return (
-    <main className={`app-shell ${gameMenuOpen ? 'menu-open' : 'menu-closed'} ${activeGame === 'duo' ? 'duo-theme' : ''}`}>
+    <main className={`app-shell ${gameMenuOpen ? 'menu-open' : 'menu-closed'} ${activeGame === 'duo' ? 'duo-theme' : ''} ${activeGame === 'talent' ? 'talent-theme' : ''}`}>
       <aside className="game-nav" aria-label="游戏选择" aria-hidden={!gameMenuOpen}>
         <div className="brand-mark">甜</div>
         <div className="nav-title">互动游戏</div>
@@ -170,6 +202,9 @@ export default function Home() {
         <button className={`game-item ${activeGame === 'duo' ? 'active' : ''}`} type="button" onClick={() => selectGame('duo')} tabIndex={gameMenuOpen ? 0 : -1}>
           <span className="game-icon">契</span><span>双人默契猜词</span>
         </button>
+        <button className={`game-item ${activeGame === 'talent' ? 'active' : ''}`} type="button" onClick={() => selectGame('talent')} tabIndex={gameMenuOpen ? 0 : -1}>
+          <span className="game-icon">艺</span><span>才艺考核</span>
+        </button>
         <div className="autosave"><span /> 本机自动保存</div>
       </aside>
 
@@ -180,12 +215,16 @@ export default function Home() {
             <div><p className="eyebrow">{gameEyebrow}</p><h1>{gameTitle}</h1></div>
           </div>
           <div className="top-actions">
-            {activeGame !== 'duo' && <div className="mic-controls" aria-label="麦位数量控制">
-              <button type="button" onClick={() => activeGame === 'chase' ? setChaseVisibleCount((count) => Math.max(1, count - 1)) : setVisibleCount((count) => Math.max(1, count - 1))} disabled={currentVisibleCount === 1} aria-label="减少一个麦位">−</button>
-              <span><b>{currentVisibleCount}</b>/8麦</span>
-              <button type="button" onClick={() => activeGame === 'chase' ? setChaseVisibleCount((count) => Math.min(8, count + 1)) : setVisibleCount((count) => Math.min(8, count + 1))} disabled={currentVisibleCount === 8}>＋ 添加麦位</button>
+            {activeGame !== 'duo' && <div className="mic-controls" aria-label={activeGame === 'talent' ? '参赛人数控制' : '麦位数量控制'}>
+              <button type="button" onClick={() => activeGame === 'talent' ? setTalentVisibleCount((count) => Math.max(1, count - 1)) : activeGame === 'chase' ? setChaseVisibleCount((count) => Math.max(1, count - 1)) : setVisibleCount((count) => Math.max(1, count - 1))} disabled={currentVisibleCount === 1} aria-label={activeGame === 'talent' ? '减少一位选手' : '减少一个麦位'}>−</button>
+              <span><b>{currentVisibleCount}</b>/8{activeGame === 'talent' ? '人' : '麦'}</span>
+              <button type="button" onClick={() => activeGame === 'talent' ? setTalentVisibleCount((count) => Math.min(8, count + 1)) : activeGame === 'chase' ? setChaseVisibleCount((count) => Math.min(8, count + 1)) : setVisibleCount((count) => Math.min(8, count + 1))} disabled={currentVisibleCount === 8}>＋ 添加{activeGame === 'talent' ? '选手' : '麦位'}</button>
             </div>}
-            {activeGame === 'duo' ? <>
+            {activeGame === 'talent' ? <>
+              <div className="rule-chip talent-skill-chip"><b>功底</b> 四级定级</div>
+              <div className="rule-chip talent-pop-chip"><b>人气</b> TOP3</div>
+              <button className="reset-button" type="button" onClick={resetGame}>重开一轮</button>
+            </> : activeGame === 'duo' ? <>
               <div className="rule-chip duo-support-chip"><b>＋10s</b> 支持</div>
               <div className="rule-chip duo-stomp-chip"><b>−10s</b> 猛踩</div>
             </> : activeGame === 'chase' ? <>
@@ -199,7 +238,49 @@ export default function Home() {
           </div>
         </header>
 
-        {activeGame === 'duo' ? <div className="duo-board">
+        {activeGame === 'talent' ? <div className="talent-board">
+          <section className="talent-ranking" aria-label="才艺考核人气统计">
+            <div className="talent-table-head"><span>序号</span><span>主播名</span><span>人气进度</span><span>人气分</span></div>
+            <div className="talent-player-list" style={{ gridTemplateRows: `repeat(${talentVisibleCount}, minmax(52px, 1fr))` }}>
+              {visibleTalentPlayers.map((player) => {
+                const progress = Math.min(100, player.score / 10);
+                const rank = talentTop3.findIndex((item) => item.id === player.id) + 1;
+                return <div className={`talent-player-row ${rank > 0 ? `talent-rank-${rank}` : ''}`} key={player.id}>
+                  <div className="talent-seat"><span>{player.id}</span>号</div>
+                  <input className="talent-name-input" aria-label={`${player.id}号主播名`} maxLength={12} placeholder="填写主播名" value={player.name} onChange={(event) => updateTalentPlayer(player.id, { name: event.target.value })} />
+                  <div className="talent-progress-wrap">
+                    <div className="talent-progress-track"><i style={{ width: `${progress}%` }} /></div>
+                    <small>{player.score >= 1000 ? '满人气' : `距满条 ${1000 - player.score} 分`}</small>
+                  </div>
+                  <TalentCounter label={`${player.id}号主播人气分`} value={player.score} onChange={(score) => updateTalentPlayer(player.id, { score })} />
+                </div>;
+              })}
+            </div>
+          </section>
+
+          <aside className="talent-side-panel">
+            <section className="talent-top-card">
+              <div className="talent-card-title"><span>人气才艺 TOP3</span><em>POPULARITY</em></div>
+              <div className="talent-podium">
+                {[0, 1, 2].map((index) => {
+                  const player = talentTop3[index];
+                  return <div className={`talent-top-item top-${index + 1}`} key={index}>
+                    <strong>{index + 1}</strong>
+                    <div><b>{player ? player.name.trim() || `${player.id}号主播` : '待上榜'}</b><span>{player ? `${player.score} 分` : '—'}</span></div>
+                    <em>{index === 0 ? '冠军' : index === 1 ? '亚军' : '季军'}</em>
+                  </div>;
+                })}
+              </div>
+              <p>1000分为满条，分数可继续累计</p>
+            </section>
+
+            <section className="talent-rules-card">
+              <div className="talent-card-title"><span>考核路线</span><em>RULES</em></div>
+              <div className="talent-route skill-route"><h2>功底路线</h2><p>夯，人上人，NPC，拉。（后台评审公布）。</p><strong>人上人+夯 上大头。</strong></div>
+              <div className="talent-route popularity-route"><h2>人气路线</h2><p>1.0 人气才艺主播，音浪TOP1 人气才艺冠军，TOP2 人气才艺亚军，TOP3人气才艺季军 （人气才艺主播中选择）。</p><strong>给个人做作品。</strong></div>
+            </section>
+          </aside>
+        </div> : activeGame === 'duo' ? <div className="duo-board">
           <section className="duo-hero">
             <p>双向默契 · 趣味对局 · 全民可互动</p>
             <div className={`duo-timer ${remainingSeconds === 0 ? 'timer-done' : ''}`}>
