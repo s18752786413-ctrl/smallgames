@@ -256,3 +256,143 @@ h1 { margin:0; font-family:Georgia,"Microsoft YaHei",serif; font-size:clamp(38px
 @media (max-aspect-ratio:16/9) { body { overflow-x:auto; } .app-shell { margin:0; } }
 @media (max-height:700px) { .game-stage { padding-top:22px; padding-bottom:22px; } .topbar { height:69px; } .content-grid { height:calc(100% - 69px); } .game-nav { padding-top:25px; } }
 
+/* 投屏大字版：四个游戏统一提升远距离可读性 */
+.app-shell { min-width:1280px; grid-template-columns:270px 1fr; }
+.app-shell.menu-closed { grid-template-columns:0 1fr; }
+.game-nav { padding:30px 20px 24px; gap:14px; }
+.brand-mark { width:70px; height:70px; font-size:36px; }
+.nav-title { margin-bottom:12px; font-size:20px; letter-spacing:6px; }
+.game-item { min-height:72px; grid-template-columns:48px 1fr; gap:12px; border-radius:18px; font-size:22px; font-weight:900; }
+.game-icon { width:48px; height:48px; border-radius:14px; font-size:24px; }
+.autosave { font-size:17px; }
+.autosave span { width:10px; height:10px; }
+
+.game-stage { padding:24px 30px 28px; }
+.topbar { height:108px; gap:20px; }
+.title-group { gap:18px; }
+.choose-game-button { height:54px; padding:0 18px; border-radius:15px; font-size:18px; }
+.eyebrow { margin-bottom:6px; font-size:17px; letter-spacing:4px; }
+h1 { font-size:clamp(54px,4vw,72px); }
+.top-actions { gap:11px; padding-top:5px; }
+.mic-controls { height:54px; border-radius:15px; }
+.mic-controls button { padding:0 15px; font-size:17px; }
+.mic-controls button:first-child { font-size:26px; }
+.mic-controls span { padding:0 13px; font-size:16px; }
+.mic-controls span b { font-size:24px; }
+.rule-chip { height:54px; padding:0 16px; border-radius:15px; gap:8px; font-size:17px; font-weight:800; }
+.rule-chip b { font-size:23px; }
+.reset-button { height:54px; padding:0 18px; border-radius:15px; font-size:17px; }
+
+.content-grid { height:calc(100% - 108px); grid-template-columns:minmax(760px,1fr) 340px; gap:18px; }
+.scoreboard { border-radius:24px; }
+.table-head,.player-row { grid-template-columns:minmax(72px,.58fr) minmax(160px,1.3fr) minmax(100px,.78fr) minmax(154px,1fr) minmax(154px,1fr); column-gap:12px; }
+.table-head.chase-grid,.player-row.chase-grid { grid-template-columns:minmax(68px,.55fr) minmax(140px,1.15fr) minmax(90px,.72fr) minmax(130px,1fr) minmax(130px,1fr) minmax(125px,1fr); column-gap:9px; }
+.table-head { height:60px; padding:0 18px; font-size:18px; }
+.player-list { height:calc(100% - 60px); }
+.player-row { min-height:62px; padding:7px 18px; }
+.mic-seat { gap:8px; font-size:18px; }
+.mic-seat span { width:44px; height:44px; border-radius:13px; font-size:24px; }
+.name-input { height:46px; padding:0 13px; font-size:20px; }
+.tool-input { height:46px; padding:0 10px; font-size:17px; }
+.score strong { font-size:40px; }
+.score small { font-size:16px; }
+.counter { height:46px; grid-template-columns:42px 70px 42px; border-radius:13px; }
+.chase-scoreboard .counter { grid-template-columns:38px 60px 38px; }
+.counter button { font-size:25px; font-weight:800; }
+.counter input { font-size:20px; }
+
+.side-panel { grid-template-rows:1fr auto 1.2fr; gap:12px; }
+.side-panel section { border-radius:22px; }
+.result-card { padding:18px; }
+.result-label { font-size:26px; letter-spacing:4px; }
+.result-score { margin-top:10px; font-size:60px; }
+.result-score small { font-size:19px; }
+.result-name { margin-top:12px; font-size:28px; }
+.result-card>p { font-size:17px; }
+.empty-result span { width:64px; height:64px; font-size:36px; }
+.empty-result p { font-size:18px; }
+.timer-card { padding:14px 17px; }
+.timer-heading { font-size:19px; }
+.timer-heading em { font-size:14px; }
+.timer-display { margin:6px 0 10px; font-size:48px; }
+.timer-settings label { height:38px; }
+.timer-settings input { font-size:19px; }
+.timer-settings label span { font-size:14px; }
+.timer-actions button { height:40px; font-size:16px; }
+.rules-card { padding:16px 18px; }
+.card-title { margin-bottom:11px; font-size:21px; }
+.card-title em { font-size:13px; }
+.boost-notice { min-height:48px; font-size:18px; }
+.boost-notice strong { font-size:22px; }
+.rules-card ol { gap:8px; }
+.rules-card li { min-height:40px; padding:0 11px; font-size:17px; }
+.formula { margin-top:10px; padding-top:10px; font-size:14px; line-height:1.5; }
+
+/* 双人默契猜词挑战大字 */
+.duo-theme h1 { font-size:clamp(48px,3.7vw,66px); }
+.duo-board { height:calc(100% - 108px); padding:16px 18px 14px; grid-template-columns:minmax(250px,1fr) minmax(430px,1.55fr) minmax(250px,1fr); gap:12px 16px; }
+.duo-hero>p { margin-bottom:10px; font-size:19px; }
+.duo-timer-status { font-size:17px; }
+.duo-timer-display { font-size:clamp(104px,8.6vw,150px); }
+.duo-timer-settings label { height:43px; }
+.duo-timer-settings label span { font-size:15px; }
+.duo-timer-settings input { font-size:21px; }
+.duo-timer-actions button { height:44px; font-size:18px; }
+.duo-adjust-card { padding:10px 13px; }
+.duo-adjust-card>div:first-child span { font-size:19px; }
+.duo-adjust-card em { font-size:13px; }
+.duo-adjust-card>label { height:42px; }
+.duo-adjust-card>label input { font-size:24px; }
+.duo-adjust-card>label span { font-size:13px; }
+.duo-adjust-buttons button { height:42px; font-size:18px; }
+.duo-rule-card { padding:16px 13px; }
+.duo-rule-heading { margin-bottom:12px; }
+.duo-rule-heading span { font-size:13px; }
+.duo-rule-heading h2 { font-size:clamp(44px,3.3vw,58px); }
+.duo-rule-card ul { gap:8px; }
+.duo-rule-card li { min-height:64px; padding:7px 8px; }
+.duo-rule-card li b { font-size:21px; }
+.duo-rule-card li strong { font-size:18px; }
+.duo-footer-note { font-size:17px; }
+
+/* 才艺考核大字 */
+.talent-board { height:calc(100% - 108px); grid-template-columns:minmax(780px,1fr) 410px; gap:16px; }
+.talent-table-head,.talent-player-row { grid-template-columns:80px minmax(150px,.82fr) minmax(240px,1.55fr) minmax(220px,1.15fr); column-gap:12px; }
+.talent-table-head { height:60px; padding:0 18px; font-size:18px; }
+.talent-player-list { height:calc(100% - 60px); }
+.talent-player-row { min-height:62px; padding:7px 18px; }
+.talent-seat { font-size:17px; }
+.talent-seat span { width:44px; height:44px; font-size:24px; }
+.talent-name-input { height:46px; font-size:20px; }
+.talent-progress-wrap { grid-template-columns:minmax(120px,1fr) 120px; }
+.talent-progress-track { height:24px; }
+.talent-progress-wrap small { font-size:14px; }
+.talent-counter { height:46px; grid-template-columns:55px minmax(78px,1fr) 55px; }
+.talent-counter button { font-size:16px; }
+.talent-counter input { font-size:21px; }
+.talent-side-panel { grid-template-rows:minmax(235px,.9fr) minmax(330px,1.1fr); gap:12px; }
+.talent-top-card,.talent-rules-card { padding:16px; }
+.talent-card-title span { font-size:24px; }
+.talent-card-title em { font-size:13px; }
+.talent-podium { margin-top:12px; gap:8px; }
+.talent-top-item { min-height:56px; grid-template-columns:42px 1fr auto; }
+.talent-top-item>strong { width:40px; height:40px; font-size:24px; }
+.talent-top-item b { font-size:18px; }
+.talent-top-item span { font-size:14px; }
+.talent-top-item>em { font-size:17px; }
+.talent-top-card>p { font-size:14px; }
+.talent-route { margin-top:12px; padding:12px 13px; }
+.talent-route h2 { margin-bottom:7px; font-size:23px; }
+.talent-route p { font-size:17px; line-height:1.55; }
+.talent-route strong { margin-top:7px; font-size:18px; }
+
+@media (max-height:760px) {
+  .game-stage { padding-top:18px; padding-bottom:18px; }
+  .topbar { height:92px; }
+  .content-grid,.duo-board,.talent-board { height:calc(100% - 92px); }
+  .table-head,.talent-table-head { height:52px; }
+  .player-list,.talent-player-list { height:calc(100% - 52px); }
+  .duo-rule-card li { min-height:54px; }
+  .talent-route { margin-top:8px; padding:8px 10px; }
+}
+
