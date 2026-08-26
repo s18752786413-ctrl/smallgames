@@ -189,7 +189,7 @@ export default function Home() {
   const gameTitle = activeGame === 'talent' ? '才艺考核' : activeGame === 'duo' ? '双人默契猜词挑战' : activeGame === 'chase' ? '追分互动小游戏' : '拉新互动小游戏';
 
   return (
-    <main className={`app-shell ${gameMenuOpen ? 'menu-open' : 'menu-closed'} ${activeGame === 'duo' ? 'duo-theme' : ''} ${activeGame === 'talent' ? 'talent-theme' : ''}`}>
+    <main data-display-mode="projector-large" className={`app-shell ${gameMenuOpen ? 'menu-open' : 'menu-closed'} ${activeGame === 'duo' ? 'duo-theme' : ''} ${activeGame === 'talent' ? 'talent-theme' : ''}`}>
       <aside className="game-nav" aria-label="游戏选择" aria-hidden={!gameMenuOpen}>
         <div className="brand-mark">甜</div>
         <div className="nav-title">互动游戏</div>
