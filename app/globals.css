@@ -550,3 +550,16 @@ h1,.duo-theme h1 { font-size:92px; }
 .talent-route p { font-size:28px; }
 .talent-route strong { font-size:30px; }
 
+/* 固定大字模式的纵向适配：保留字号，压缩装饰留白并给计分区、规则区更多高度 */
+.game-stage { padding:14px 22px 18px; }
+.topbar { height:108px; }
+.content-grid,.duo-board,.talent-board { height:calc(100% - 108px); }
+.scoreboard,.side-panel,.rules-card { min-height:0; }
+.side-panel { grid-template-rows:minmax(190px,.72fr) auto minmax(390px,1.45fr); gap:10px; }
+.rules-card { padding:12px 16px 14px; overflow:hidden; }
+.card-title { margin-bottom:7px; }
+.boost-notice { min-height:52px; margin-bottom:7px; }
+.rules-card ol { gap:5px; }
+.rules-card li { min-height:46px; }
+.formula { margin-top:7px; padding-top:7px; line-height:1.35; }
+
