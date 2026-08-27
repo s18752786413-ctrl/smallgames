@@ -503,3 +503,50 @@ h1,.duo-theme h1 { font-size:clamp(68px,5vw,96px); line-height:1; }
   .player-list,.talent-player-list { height:calc(100% - 62px); }
 }
 
+/* 固定投屏画布：字号不再随窗口宽高变化，只允许浏览器缩放整张页面 */
+html,body { min-width:1920px; min-height:1080px; }
+.app-shell { width:1920px; min-width:1920px; height:1080px; min-height:1080px; margin:0 auto; aspect-ratio:auto; }
+.game-stage { padding:22px 26px 26px; }
+.topbar { height:124px; }
+.content-grid,.duo-board,.talent-board { height:calc(100% - 124px); }
+.table-head,.talent-table-head { height:72px; }
+.player-list,.talent-player-list { height:calc(100% - 72px); }
+.game-item { font-size:34px; }
+.choose-game-button { font-size:28px; }
+h1,.duo-theme h1 { font-size:92px; }
+.mic-controls button,.rule-chip,.reset-button { font-size:27px; }
+.table-head,.talent-table-head { font-size:30px; }
+.mic-seat,.talent-seat { font-size:28px; }
+.name-input,.talent-name-input { font-size:36px; }
+.tool-input { font-size:30px; }
+.score strong { font-size:62px; }
+.counter input,.talent-counter input { font-size:34px; }
+.result-label { font-size:40px; }
+.result-score { font-size:90px; }
+.result-name { font-size:46px; }
+.result-card>p { font-size:28px; }
+.empty-result p { font-size:29px; }
+.timer-heading { font-size:32px; }
+.timer-display { font-size:80px; }
+.card-title { font-size:34px; }
+.boost-notice { font-size:29px; }
+.rules-card li { font-size:28px; }
+.formula { font-size:24px; }
+.duo-hero>p { font-size:30px; }
+.duo-timer-status { font-size:29px; }
+.duo-timer-display { font-size:172px; }
+.duo-adjust-card>div:first-child span { font-size:30px; }
+.duo-rule-heading h2 { font-size:70px; }
+.duo-rule-card li b { font-size:35px; }
+.duo-rule-card li strong { font-size:30px; }
+.duo-footer-note { font-size:28px; }
+.talent-progress-wrap small { font-size:24px; }
+.talent-card-title span { font-size:40px; }
+.talent-top-item b { font-size:32px; }
+.talent-top-item span { font-size:25px; }
+.talent-top-item>em { font-size:28px; }
+.talent-top-card>p { font-size:24px; }
+.talent-route h2 { font-size:36px; }
+.talent-route p { font-size:28px; }
+.talent-route strong { font-size:30px; }
+
