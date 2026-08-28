@@ -8,10 +8,16 @@ type TalentPlayer = { id: number; name: string; score: number };
 type GameType = 'newcomer' | 'chase' | 'duo' | 'talent' | 'scratch';
 type ScratchTheme = 'pink' | 'purple-pink' | 'purple' | 'blue' | 'green';
 
-const scratchDefaults = [
+const previousScratchDefaults = [
   '指定歌单', '撒娇八连', '换头像1h', '学猫叫三声', '咬舌头说话1分钟', '说三个土味情话',
   '给厅里每个人道歉包括主持', '原地转十圈', '做五个深蹲', '夸主持三分钟', '用气泡音说话1分钟',
   '用夹子音说话1分钟', '学三声猪叫', '指定卖汤圆', '模仿唐老鸭说话', '学三种动物叫', '指定报菜名', '谢谢惠顾',
+];
+
+const scratchDefaults = [
+  '指定歌单', '撒娇八连', '夸你的第一句话', '奖励你来一个最得意的才艺', '咬舌头说话1分钟', '说三个土味情话',
+  '给厅里每个人道歉包括主持', '捏紧鼻子然后歌到3口', '做五个深蹲', '夸主持一分钟', '用气泡音说话1分钟',
+  '用夹子音说话1分钟', '学三声猪叫', '唱狗叫版《拔萝卜》', '模仿唐老鸭说话（2分钟）', '学三种动物叫', '指定报菜名', '谢谢惠顾',
 ];
 
 const scratchImages = scratchDefaults.map((_, index) => `kuromi-scratch/card-${String(index === 17 ? 1 : index + 1).padStart(2, '0')}-web.png`);
@@ -208,7 +214,10 @@ export default function Home() {
       const savedTalentVisibleCount = Number(window.localStorage.getItem('talent-game-visible-count'));
       if (savedTalentVisibleCount >= 1 && savedTalentVisibleCount <= 8) setTalentVisibleCount(savedTalentVisibleCount);
       const savedScratchTexts = window.localStorage.getItem('scratch-game-texts');
-      if (savedScratchTexts) setScratchTexts(JSON.parse(savedScratchTexts));
+      if (savedScratchTexts) {
+        const parsedScratchTexts = JSON.parse(savedScratchTexts);
+        setScratchTexts(JSON.stringify(parsedScratchTexts) === JSON.stringify(previousScratchDefaults) ? scratchDefaults : parsedScratchTexts);
+      }
       const savedScratchRule = window.localStorage.getItem('scratch-game-rule');
       if (savedScratchRule) setScratchRule(savedScratchRule);
       const savedScratchTheme = window.localStorage.getItem('scratch-game-theme') as ScratchTheme | null;
