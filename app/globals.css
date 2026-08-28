@@ -576,3 +576,64 @@ h1,.duo-theme h1 { font-size:92px; }
   text-align:right;
 }
 
+/* 库洛米刮刮乐：迁移自用户原网页的18格刮卡、主题和编辑功能 */
+.app-shell.scratch-theme {
+  --scratch-accent:#ff69a8;
+  --scratch-soft:#ffd1e5;
+  --scratch-bg-top:#2a1622;
+  --scratch-bg-mid:#12080f;
+  --scratch-bg-bottom:#0a0408;
+  color:#ffe8f3;
+  background:linear-gradient(180deg,var(--scratch-bg-top),var(--scratch-bg-mid) 52%,var(--scratch-bg-bottom));
+}
+.app-shell.scratch-theme-purple { --scratch-accent:#bd83ff; --scratch-soft:#e5ceff; --scratch-bg-top:#281643; --scratch-bg-mid:#130a24; --scratch-bg-bottom:#08040f; }
+.app-shell.scratch-theme-blue { --scratch-accent:#65cfff; --scratch-soft:#d7f4ff; --scratch-bg-top:#132b40; --scratch-bg-mid:#071625; --scratch-bg-bottom:#020a11; }
+.app-shell.scratch-theme-green { --scratch-accent:#72e6ad; --scratch-soft:#d6ffea; --scratch-bg-top:#17372c; --scratch-bg-mid:#082019; --scratch-bg-bottom:#03100c; }
+.scratch-theme .game-nav { background:radial-gradient(circle at 18% 7%,color-mix(in srgb,var(--scratch-accent) 30%,transparent),transparent 22%),linear-gradient(180deg,#21101b,#080408); border-right:1px solid color-mix(in srgb,var(--scratch-accent) 45%,transparent); }
+.scratch-theme .game-item.active { color:#2b1020; background:linear-gradient(135deg,var(--scratch-soft),var(--scratch-accent)); }
+.scratch-theme .game-stage { position:relative; color:#ffeaf4; background:radial-gradient(circle at 10% 10%,color-mix(in srgb,var(--scratch-accent) 14%,transparent),transparent 22%),linear-gradient(180deg,var(--scratch-bg-top),var(--scratch-bg-mid) 55%,var(--scratch-bg-bottom)); }
+.scratch-theme .choose-game-button,.scratch-action { color:var(--scratch-soft); border:2px solid color-mix(in srgb,var(--scratch-accent) 72%,#fff); background:rgba(14,5,11,.76); box-shadow:0 0 18px color-mix(in srgb,var(--scratch-accent) 20%,transparent); }
+.scratch-theme .choose-game-button:hover,.scratch-action:hover,.scratch-action.active { color:#35101f; background:linear-gradient(135deg,var(--scratch-soft),var(--scratch-accent)); }
+.scratch-theme h1 { color:var(--scratch-accent); font-family:"Microsoft YaHei",sans-serif; font-weight:1000; letter-spacing:5px; text-shadow:0 0 22px color-mix(in srgb,var(--scratch-accent) 45%,transparent),0 4px 0 rgba(0,0,0,.35); }
+.scratch-action { height:62px; padding:0 18px; border-radius:999px; cursor:pointer; font-size:24px; font-weight:900; white-space:nowrap; }
+.scratch-action.restart { color:#2c1020; background:linear-gradient(135deg,#fff1f7,var(--scratch-accent)); }
+
+.scratch-board { position:relative; height:calc(100% - 108px); min-height:0; padding:12px 26px 18px; border:3px solid color-mix(in srgb,var(--scratch-accent) 70%,#fff); border-radius:28px; display:grid; grid-template-rows:58px 50px minmax(0,1fr); gap:10px; overflow:hidden; background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(0,0,0,.18)); box-shadow:inset 0 0 70px rgba(0,0,0,.48),0 0 28px color-mix(in srgb,var(--scratch-accent) 18%,transparent); }
+.scratch-rule-banner { position:relative; z-index:2; padding:0 24px; border:4px solid var(--scratch-accent); border-radius:14px; display:flex; align-items:center; justify-content:center; overflow:hidden; color:var(--scratch-soft); background:rgba(16,5,12,.72); box-shadow:0 0 16px color-mix(in srgb,var(--scratch-accent) 38%,transparent); text-align:center; white-space:nowrap; text-overflow:ellipsis; font-size:29px; font-weight:900; }
+.scratch-progress-row { position:relative; z-index:2; display:grid; grid-template-columns:auto 300px auto 1fr; align-items:center; gap:12px; color:var(--scratch-soft); font-size:24px; font-weight:900; }
+.scratch-progress { height:15px; overflow:hidden; border:2px solid var(--scratch-accent); border-radius:999px; background:rgba(0,0,0,.45); }
+.scratch-progress i { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--scratch-accent),#fff2a6); box-shadow:0 0 14px var(--scratch-accent); transition:width .3s ease; }
+.scratch-progress-row strong { color:#fff; font-size:26px; }
+.scratch-progress-row em { justify-self:end; color:color-mix(in srgb,var(--scratch-soft) 72%,transparent); font-size:20px; font-style:normal; }
+.scratch-grid { position:relative; z-index:2; min-height:0; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)); gap:12px; }
+.scratch-card { position:relative; min-width:0; min-height:0; overflow:hidden; border:4px solid var(--scratch-accent); border-radius:15px; background:linear-gradient(145deg,#fff9f2,#ffdbe9); box-shadow:inset 0 0 0 2px rgba(255,255,255,.7),0 0 14px color-mix(in srgb,var(--scratch-accent) 30%,transparent); }
+.scratch-card-content { position:absolute; inset:0; padding:10px 12px 12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:#50182e; text-align:center; }
+.scratch-card-content img { width:64%; height:68%; object-fit:contain; filter:drop-shadow(0 7px 8px rgba(53,11,31,.22)); }
+.scratch-card-content strong { display:flex; align-items:center; justify-content:center; min-height:54px; font-size:25px; line-height:1.08; font-weight:1000; }
+.scratch-card canvas { position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; touch-action:none; }
+.scratch-card.revealed { animation:scratch-reveal .42s ease both; }
+@keyframes scratch-reveal { 0% { transform:scale(.96); filter:brightness(1.3); } 100% { transform:scale(1); filter:brightness(1); } }
+.scratch-decor { position:absolute; z-index:1; color:color-mix(in srgb,var(--scratch-accent) 18%,transparent); font-size:120px; font-weight:900; pointer-events:none; }
+.scratch-decor.decor-one { left:20px; top:110px; transform:rotate(-12deg); }
+.scratch-decor.decor-two { right:50px; top:250px; }
+.scratch-decor.decor-three { right:24px; bottom:8px; font-size:170px; }
+
+.scratch-settings-panel,.scratch-edit-panel { position:absolute; z-index:20; border:3px solid var(--scratch-accent); border-radius:22px; color:#ffeaf4; background:linear-gradient(160deg,rgba(38,13,28,.98),rgba(9,3,7,.98)); box-shadow:0 20px 70px rgba(0,0,0,.72),0 0 30px color-mix(in srgb,var(--scratch-accent) 28%,transparent); }
+.scratch-settings-panel { top:82px; right:24px; width:430px; padding:22px; }
+.scratch-edit-panel { inset:82px 40px 24px; padding:22px 26px; overflow:auto; }
+.scratch-panel-title { display:flex; align-items:center; justify-content:space-between; color:var(--scratch-soft); font-size:31px; }
+.scratch-panel-title button { width:44px; height:44px; border:0; border-radius:50%; color:#fff; background:rgba(255,255,255,.12); cursor:pointer; font-size:30px; }
+.scratch-settings-panel>p { margin:22px 0 12px; color:#d9bdca; font-size:21px; font-weight:800; }
+.scratch-theme-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.scratch-theme-options button { height:58px; border:2px solid rgba(255,255,255,.18); border-radius:12px; color:#f9dfeb; background:rgba(255,255,255,.06); cursor:pointer; font-size:22px; font-weight:900; }
+.scratch-theme-options button.selected { border-color:var(--scratch-accent); box-shadow:0 0 16px color-mix(in srgb,var(--scratch-accent) 36%,transparent); }
+.scratch-theme-options i { display:inline-block; width:22px; height:22px; margin-right:8px; border-radius:50%; vertical-align:-4px; background:var(--scratch-accent); }
+.scratch-settings-panel .scratch-panel-tip { color:#a78e9a; font-size:17px; line-height:1.5; }
+.scratch-edit-panel>label { margin:18px 0 14px; display:grid; grid-template-columns:140px 1fr; align-items:center; gap:12px; color:var(--scratch-soft); font-size:23px; font-weight:900; }
+.scratch-edit-panel input { width:100%; height:48px; padding:0 14px; border:2px solid rgba(255,255,255,.18); border-radius:10px; outline:0; color:#fff; background:rgba(255,255,255,.07); font-size:21px; font-weight:800; }
+.scratch-edit-panel input:focus { border-color:var(--scratch-accent); }
+.scratch-edit-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px 14px; }
+.scratch-edit-grid label { display:grid; grid-template-columns:42px 1fr; align-items:center; gap:6px; }
+.scratch-edit-grid span { color:var(--scratch-accent); text-align:center; font-size:20px; font-weight:900; }
+.scratch-restore { height:46px; margin-top:14px; padding:0 22px; border:2px solid var(--scratch-accent); border-radius:10px; color:var(--scratch-soft); background:transparent; cursor:pointer; font-size:20px; font-weight:900; }
+

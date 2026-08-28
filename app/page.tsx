@@ -1,11 +1,96 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from 'react';
 
 type Player = { id: number; name: string; chats: number; supports: number };
 type ChasePlayer = { id: number; name: string; normalScore: number; boostScore: number; boostTool: string };
 type TalentPlayer = { id: number; name: string; score: number };
-type GameType = 'newcomer' | 'chase' | 'duo' | 'talent';
+type GameType = 'newcomer' | 'chase' | 'duo' | 'talent' | 'scratch';
+type ScratchTheme = 'pink' | 'purple' | 'blue' | 'green';
+
+const scratchDefaults = [
+  '指定歌单', '撒娇八连', '换头像1h', '学猫叫三声', '咬舌头说话1分钟', '说三个土味情话',
+  '给厅里每个人道歉包括主持', '原地转十圈', '做五个深蹲', '夸主持三分钟', '用气泡音说话1分钟',
+  '用夹子音说话1分钟', '学三声猪叫', '指定卖汤圆', '模仿唐老鸭说话', '学三种动物叫', '指定报菜名', '谢谢惠顾',
+];
+
+const scratchImages = scratchDefaults.map((_, index) => `kuromi-scratch/card-${String(index === 17 ? 1 : index + 1).padStart(2, '0')}.jpg`);
+
+function ScratchCard({ index, text, image, resetKey, forceRevealed, onReveal }: {
+  index: number; text: string; image: string; resetKey: number; forceRevealed: boolean; onReveal: (index: number) => void;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const drawingRef = useRef(false);
+  const moveCountRef = useRef(0);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    setRevealed(false);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const width = Math.max(1, canvas.clientWidth);
+    const height = Math.max(1, canvas.clientHeight);
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    const gradient = context.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, '#fff8fc');
+    gradient.addColorStop(.48, '#d9ced7');
+    gradient.addColorStop(1, '#fff5fb');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, width, height);
+    context.fillStyle = 'rgba(69,30,54,.24)';
+    context.font = '900 50px Microsoft YaHei';
+    context.textAlign = 'center';
+    context.fillText('☠', width / 2, height / 2 - 4);
+    context.fillStyle = 'rgba(255,87,165,.72)';
+    context.font = '900 28px Microsoft YaHei';
+    context.fillText('刮开', width / 2, height / 2 + 44);
+    context.globalCompositeOperation = 'destination-out';
+  }, [resetKey]);
+
+  useEffect(() => {
+    if (forceRevealed && !revealed) {
+      setRevealed(true);
+      onReveal(index);
+    }
+  }, [forceRevealed, index, onReveal, revealed]);
+
+  function scratch(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (!drawingRef.current || revealed) return;
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return;
+    const rect = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+    context.save();
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    context.beginPath();
+    context.arc(event.clientX - rect.left, event.clientY - rect.top, 34, 0, Math.PI * 2);
+    context.fill();
+    context.restore();
+    moveCountRef.current += 1;
+    if (moveCountRef.current % 7 !== 0) return;
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let transparent = 0;
+    for (let pixel = 3; pixel < pixels.length; pixel += 16) if (pixels[pixel] < 40) transparent += 1;
+    if (transparent / (pixels.length / 16) > .34) {
+      setRevealed(true);
+      drawingRef.current = false;
+      onReveal(index);
+    }
+  }
+
+  return <article className={`scratch-card ${revealed || forceRevealed ? 'revealed' : ''}`}>
+    <div className="scratch-card-content"><img src={image} alt="库洛米" /><strong>{text}</strong></div>
+    {!revealed && !forceRevealed && <canvas ref={canvasRef} aria-label={`刮开第${index + 1}张卡片`}
+      onPointerDown={(event) => { drawingRef.current = true; moveCountRef.current = 0; event.currentTarget.setPointerCapture(event.pointerId); scratch(event); }}
+      onPointerMove={scratch} onPointerUp={() => { drawingRef.current = false; }} onPointerCancel={() => { drawingRef.current = false; }} />}
+  </article>;
+}
 
 const defaultPlayers: Player[] = Array.from({ length: 8 }, (_, index) => ({
   id: index + 1, name: '', chats: 0, supports: 0,
@@ -58,6 +143,14 @@ export default function Home() {
   const [remainingSeconds, setRemainingSeconds] = useState(300);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [adjustSeconds, setAdjustSeconds] = useState(10);
+  const [scratchTexts, setScratchTexts] = useState(scratchDefaults);
+  const [scratchRule, setScratchRule] = useState('全麦棒棒糖刮一次 // 指定主持第一次99星辰 · 第二次199比心');
+  const [scratchTheme, setScratchTheme] = useState<ScratchTheme>('pink');
+  const [scratchThemeOpen, setScratchThemeOpen] = useState(false);
+  const [scratchEditing, setScratchEditing] = useState(false);
+  const [scratchResetKey, setScratchResetKey] = useState(0);
+  const [scratchRevealAll, setScratchRevealAll] = useState(false);
+  const [scratchRevealed, setScratchRevealed] = useState<number[]>([]);
 
   useEffect(() => {
     try {
@@ -73,6 +166,12 @@ export default function Home() {
       if (savedTalentPlayers) setTalentPlayers(JSON.parse(savedTalentPlayers));
       const savedTalentVisibleCount = Number(window.localStorage.getItem('talent-game-visible-count'));
       if (savedTalentVisibleCount >= 1 && savedTalentVisibleCount <= 8) setTalentVisibleCount(savedTalentVisibleCount);
+      const savedScratchTexts = window.localStorage.getItem('scratch-game-texts');
+      if (savedScratchTexts) setScratchTexts(JSON.parse(savedScratchTexts));
+      const savedScratchRule = window.localStorage.getItem('scratch-game-rule');
+      if (savedScratchRule) setScratchRule(savedScratchRule);
+      const savedScratchTheme = window.localStorage.getItem('scratch-game-theme') as ScratchTheme | null;
+      if (savedScratchTheme && ['pink', 'purple', 'blue', 'green'].includes(savedScratchTheme)) setScratchTheme(savedScratchTheme);
     } catch {
       // 本地记录不可用时继续使用空白表，不影响现场计分。
     }
@@ -87,7 +186,10 @@ export default function Home() {
     window.localStorage.setItem('chase-game-visible-count', String(chaseVisibleCount));
     window.localStorage.setItem('talent-game-players', JSON.stringify(talentPlayers));
     window.localStorage.setItem('talent-game-visible-count', String(talentVisibleCount));
-  }, [players, visibleCount, chasePlayers, chaseVisibleCount, talentPlayers, talentVisibleCount, loaded]);
+    window.localStorage.setItem('scratch-game-texts', JSON.stringify(scratchTexts));
+    window.localStorage.setItem('scratch-game-rule', scratchRule);
+    window.localStorage.setItem('scratch-game-theme', scratchTheme);
+  }, [players, visibleCount, chasePlayers, chaseVisibleCount, talentPlayers, talentVisibleCount, scratchTexts, scratchRule, scratchTheme, loaded]);
 
   useEffect(() => {
     if (!isTimerRunning) return;
@@ -132,6 +234,17 @@ export default function Home() {
     setTalentPlayers((current) => current.map((player) => player.id === id ? { ...player, ...patch } : player));
   }
 
+  function recordScratchReveal(index: number) {
+    setScratchRevealed((current) => current.includes(index) ? current : [...current, index]);
+  }
+
+  function restartScratchGame() {
+    if (!window.confirm('确认覆盖刮层并重新开始吗？已刮开的结果将被隐藏。')) return;
+    setScratchRevealAll(false);
+    setScratchRevealed([]);
+    setScratchResetKey((current) => current + 1);
+  }
+
   function selectGame(game: GameType) {
     setActiveGame(game);
     setGameMenuOpen(false);
@@ -146,6 +259,7 @@ export default function Home() {
     if (!window.confirm('确认清空本轮全部拍档名和积分吗？')) return;
     if (activeGame === 'chase') setChasePlayers(defaultChasePlayers);
     else if (activeGame === 'talent') setTalentPlayers(defaultTalentPlayers);
+    else if (activeGame === 'scratch') restartScratchGame();
     else setPlayers(defaultPlayers);
   }
 
@@ -185,11 +299,11 @@ export default function Home() {
     setRemainingSeconds((current) => Math.max(0, Math.min(5999, current + direction * amount)));
   }
 
-  const gameEyebrow = activeGame === 'talent' ? 'TALENT · ASSESSMENT' : activeGame === 'duo' ? 'DUO · WORD CHALLENGE' : activeGame === 'chase' ? 'CHASE · INTERACTION' : 'NEWCOMER · INTERACTION';
-  const gameTitle = activeGame === 'talent' ? '才艺考核' : activeGame === 'duo' ? '双人默契猜词挑战' : activeGame === 'chase' ? '追分互动小游戏' : '拉新互动小游戏';
+  const gameEyebrow = activeGame === 'scratch' ? 'KUROMI · SCRATCH CARD' : activeGame === 'talent' ? 'TALENT · ASSESSMENT' : activeGame === 'duo' ? 'DUO · WORD CHALLENGE' : activeGame === 'chase' ? 'CHASE · INTERACTION' : 'NEWCOMER · INTERACTION';
+  const gameTitle = activeGame === 'scratch' ? '库洛米刮刮乐' : activeGame === 'talent' ? '才艺考核' : activeGame === 'duo' ? '双人默契猜词挑战' : activeGame === 'chase' ? '追分互动小游戏' : '拉新互动小游戏';
 
   return (
-    <main data-display-mode="projector-large" className={`app-shell ${gameMenuOpen ? 'menu-open' : 'menu-closed'} ${activeGame === 'duo' ? 'duo-theme' : ''} ${activeGame === 'talent' ? 'talent-theme' : ''}`}>
+    <main data-display-mode="projector-large" className={`app-shell ${gameMenuOpen ? 'menu-open' : 'menu-closed'} ${activeGame === 'duo' ? 'duo-theme' : ''} ${activeGame === 'talent' ? 'talent-theme' : ''} ${activeGame === 'scratch' ? `scratch-theme scratch-theme-${scratchTheme}` : ''}`}>
       <aside className="game-nav" aria-label="游戏选择" aria-hidden={!gameMenuOpen}>
         <div className="brand-mark">甜</div>
         <div className="nav-title">互动游戏</div>
@@ -205,6 +319,9 @@ export default function Home() {
         <button className={`game-item ${activeGame === 'talent' ? 'active' : ''}`} type="button" onClick={() => selectGame('talent')} tabIndex={gameMenuOpen ? 0 : -1}>
           <span className="game-icon">艺</span><span>才艺考核</span>
         </button>
+        <button className={`game-item ${activeGame === 'scratch' ? 'active' : ''}`} type="button" onClick={() => selectGame('scratch')} tabIndex={gameMenuOpen ? 0 : -1}>
+          <span className="game-icon">刮</span><span>库洛米刮刮乐</span>
+        </button>
         <div className="autosave"><span /> 本机自动保存</div>
       </aside>
 
@@ -215,12 +332,17 @@ export default function Home() {
             <div><p className="eyebrow">{gameEyebrow}</p><h1>{gameTitle}</h1></div>
           </div>
           <div className="top-actions">
-            {activeGame !== 'duo' && <div className="mic-controls" aria-label={activeGame === 'talent' ? '参赛人数控制' : '麦位数量控制'}>
+            {activeGame !== 'duo' && activeGame !== 'scratch' && <div className="mic-controls" aria-label={activeGame === 'talent' ? '参赛人数控制' : '麦位数量控制'}>
               <button type="button" onClick={() => activeGame === 'talent' ? setTalentVisibleCount((count) => Math.max(1, count - 1)) : activeGame === 'chase' ? setChaseVisibleCount((count) => Math.max(1, count - 1)) : setVisibleCount((count) => Math.max(1, count - 1))} disabled={currentVisibleCount === 1} aria-label={activeGame === 'talent' ? '减少一位选手' : '减少一个麦位'}>−</button>
               <span><b>{currentVisibleCount}</b>/8{activeGame === 'talent' ? '人' : '麦'}</span>
               <button type="button" onClick={() => activeGame === 'talent' ? setTalentVisibleCount((count) => Math.min(8, count + 1)) : activeGame === 'chase' ? setChaseVisibleCount((count) => Math.min(8, count + 1)) : setVisibleCount((count) => Math.min(8, count + 1))} disabled={currentVisibleCount === 8}>＋ 添加{activeGame === 'talent' ? '选手' : '麦位'}</button>
             </div>}
-            {activeGame === 'talent' ? <>
+            {activeGame === 'scratch' ? <>
+              <button className="scratch-action" type="button" onClick={() => setScratchThemeOpen((open) => !open)}>⚙ 主题设置</button>
+              <button className={`scratch-action ${scratchEditing ? 'active' : ''}`} type="button" onClick={() => setScratchEditing((editing) => !editing)}>{scratchEditing ? '✓ 完成编辑' : '✎ 编辑'}</button>
+              <button className="scratch-action" type="button" onClick={() => { setScratchRevealAll(true); setScratchRevealed(scratchDefaults.map((_, index) => index)); }}>全部刮开</button>
+              <button className="scratch-action restart" type="button" onClick={restartScratchGame}>重新开始</button>
+            </> : activeGame === 'talent' ? <>
               <div className="rule-chip talent-skill-chip"><b>功底</b> 四级定级</div>
               <div className="rule-chip talent-pop-chip"><b>人气</b> TOP3</div>
               <button className="reset-button" type="button" onClick={resetGame}>重开一轮</button>
@@ -234,11 +356,42 @@ export default function Home() {
               <div className="rule-chip"><b>＋2</b> 交流</div>
               <div className="rule-chip support"><b>＋10</b> 支持</div>
             </>}
-            {activeGame !== 'duo' && <button className="reset-button" type="button" onClick={resetGame}>重开一局</button>}
+            {activeGame !== 'duo' && activeGame !== 'scratch' && <button className="reset-button" type="button" onClick={resetGame}>重开一局</button>}
           </div>
         </header>
 
-        {activeGame === 'talent' ? <div className="talent-board">
+        {activeGame === 'scratch' ? <div className="scratch-board">
+          <div className="scratch-decor decor-one">☠</div><div className="scratch-decor decor-two">✦</div><div className="scratch-decor decor-three">♡</div>
+          <div className="scratch-rule-banner">{scratchRule}</div>
+          <div className="scratch-progress-row">
+            <span>已刮开</span><div className="scratch-progress"><i style={{ width: `${scratchRevealed.length / scratchDefaults.length * 100}%` }} /></div>
+            <strong>{scratchRevealed.length} / {scratchDefaults.length}</strong><em>按住卡片来回刮动</em>
+          </div>
+          <section className="scratch-grid" aria-label="库洛米刮刮乐卡片区">
+            {scratchTexts.map((text, index) => <ScratchCard key={`${index}-${scratchResetKey}`} index={index} text={text} image={scratchImages[index]}
+              resetKey={scratchResetKey} forceRevealed={scratchRevealAll} onReveal={recordScratchReveal} />)}
+          </section>
+
+          {scratchThemeOpen && <aside className="scratch-settings-panel">
+            <div className="scratch-panel-title"><strong>🎨 主题设置</strong><button type="button" onClick={() => setScratchThemeOpen(false)}>×</button></div>
+            <p>预设主题</p>
+            <div className="scratch-theme-options">
+              {([['pink', '紫粉'], ['purple', '紫色'], ['blue', '蓝白'], ['green', '绿白']] as [ScratchTheme, string][]).map(([value, label]) =>
+                <button className={scratchTheme === value ? 'selected' : ''} type="button" key={value} onClick={() => setScratchTheme(value)}><i />{label}</button>)}
+            </div>
+            <p className="scratch-panel-tip">主题会自动保存到本机，下次打开继续使用。</p>
+          </aside>}
+
+          {scratchEditing && <aside className="scratch-edit-panel">
+            <div className="scratch-panel-title"><strong>✎ 编辑刮卡内容</strong><button type="button" onClick={() => setScratchEditing(false)}>×</button></div>
+            <label>顶部规则<input value={scratchRule} maxLength={80} onChange={(event) => setScratchRule(event.target.value)} /></label>
+            <div className="scratch-edit-grid">
+              {scratchTexts.map((text, index) => <label key={index}><span>{index + 1}</span><input value={text} maxLength={24}
+                onChange={(event) => setScratchTexts((current) => current.map((item, itemIndex) => itemIndex === index ? event.target.value : item))} /></label>)}
+            </div>
+            <button className="scratch-restore" type="button" onClick={() => { setScratchTexts(scratchDefaults); setScratchRule('全麦棒棒糖刮一次 // 指定主持第一次99星辰 · 第二次199比心'); }}>恢复原始内容</button>
+          </aside>}
+        </div> : activeGame === 'talent' ? <div className="talent-board">
           <section className="talent-ranking" aria-label="才艺考核人气统计">
             <div className="talent-table-head"><span>序号</span><span>主播名</span><span>人气进度</span><span>人气分</span></div>
             <div className="talent-player-list" style={{ gridTemplateRows: `repeat(${talentVisibleCount}, minmax(52px, 1fr))` }}>
