@@ -132,7 +132,6 @@ function ScratchCard({ index, text, image, resetKey, forceRevealed, onReveal }: 
 
   return <div className={`scratch-card ${revealed || forceRevealed ? 'revealed' : ''}`}>
     <div className="card-content"><img className="card-kuromi" src={image} alt="库洛米" /><div className="card-text">{text}</div></div>
-    <div className="scratch-hint">?</div>
     <canvas ref={canvasRef} className={`scratch-canvas ${revealed || forceRevealed ? 'fade-out' : ''}`} aria-label={`刮开第${index + 1}张卡片`}
       onPointerDown={(event) => { if (revealed || forceRevealed) return; drawingRef.current = true; lastPointRef.current = point(event); event.currentTarget.setPointerCapture(event.pointerId); scratch(event); }}
       onPointerMove={scratch} onPointerUp={finishScratch} onPointerLeave={finishScratch} onPointerCancel={finishScratch} />
