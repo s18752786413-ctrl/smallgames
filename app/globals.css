@@ -637,3 +637,68 @@ h1,.duo-theme h1 { font-size:92px; }
 .scratch-edit-grid span { color:var(--scratch-accent); text-align:center; font-size:20px; font-weight:900; }
 .scratch-restore { height:46px; margin-top:14px; padding:0 22px; border:2px solid var(--scratch-accent); border-radius:10px; color:var(--scratch-soft); background:transparent; cursor:pointer; font-size:20px; font-weight:900; }
 
+/* 库洛米原网页1:1视觉参数：以下数值来自原页面实际CSS与1280×720计算样式 */
+@font-face { font-family:"ZCOOL KuaiLe"; font-style:normal; font-weight:400; font-display:swap; src:url("https://fonts.gstatic.com/s/zcoolkuaile/v22/tssqApdaRQokwFjFJjvM6h2Wpg.ttf") format("truetype"); }
+@font-face { font-family:"Ma Shan Zheng"; font-style:normal; font-weight:400; font-display:swap; src:url("https://fonts.gstatic.com/s/mashanzheng/v18/NaPecZTRCLxvwo41b4gvzkXaRMQ.ttf") format("truetype"); }
+.app-shell.scratch-theme {
+  --bg-gradient-top:#2a1622; --bg-gradient-mid:#12080f; --bg-gradient-bot:#0a0408;
+  --bg-deep:#12080f; --bg-card:#1a0d16; --accent:#ff8ec4; --accent-light:#ffb6d5;
+  --accent-lighter:#ffd4e5; --accent-strong:#ff6b9d; --surface-light:#fff0f6;
+  --text-on-dark:#fff; --text-on-light:#1a0d16; --border-dark:#2a1622;
+  overflow-x:hidden; overflow-y:auto;
+  color:var(--text-on-dark);
+  background:radial-gradient(ellipse at top,var(--bg-gradient-top) 0,var(--bg-gradient-mid) 60%,var(--bg-gradient-bot) 100%);
+  font-family:"ZCOOL KuaiLe","Ma Shan Zheng",-apple-system,"PingFang SC",sans-serif;
+}
+html:has(body.scratch-page),body.scratch-page { min-width:0; min-height:100%; }
+body.scratch-page { overflow-x:hidden; overflow-y:auto; background:radial-gradient(ellipse at top,#2a1622 0,#12080f 60%,#0a0408 100%); }
+.app-shell.scratch-theme { width:100%; min-width:0; height:auto; min-height:100vh; margin:0; aspect-ratio:auto; }
+.app-shell.scratch-theme.menu-closed { display:grid; grid-template-columns:0 minmax(0,1fr); }
+.app-shell.scratch-theme.menu-open { display:grid; grid-template-columns:300px minmax(0,1fr); }
+.app-shell.scratch-theme-purple-pink { --bg-gradient-top:#3b1c4a; --bg-gradient-mid:#1a0d22; --bg-gradient-bot:#0a0410; --bg-deep:#1a0d22; --bg-card:#2d1638; --accent:#f472b6; --accent-light:#f9a8d4; --accent-lighter:#fbcfe8; --accent-strong:#ec4899; --surface-light:#fdf2f8; --text-on-light:#2d1638; --border-dark:#3b1c4a; }
+.app-shell.scratch-theme-purple { --bg-gradient-top:#2d1b4e; --bg-gradient-mid:#160d2a; --bg-gradient-bot:#0a0514; --bg-deep:#160d2a; --bg-card:#1f1238; --accent:#c77dff; --accent-light:#e0aaff; --accent-lighter:#f0d6ff; --accent-strong:#9d4edd; --surface-light:#faf0ff; --text-on-light:#1f1238; --border-dark:#2d1b4e; }
+.app-shell.scratch-theme-blue { --bg-gradient-top:#1a365d; --bg-gradient-mid:#0d1b2a; --bg-gradient-bot:#050a10; --bg-deep:#0d1b2a; --bg-card:#1b263b; --accent:#60a5fa; --accent-light:#93c5fd; --accent-lighter:#bfdbfe; --accent-strong:#3b82f6; --surface-light:#eff6ff; --text-on-light:#1b263b; --border-dark:#1a365d; }
+.app-shell.scratch-theme-green { --bg-gradient-top:#14532d; --bg-gradient-mid:#0a2315; --bg-gradient-bot:#03100a; --bg-deep:#0a2315; --bg-card:#14532d; --accent:#4ade80; --accent-light:#86efac; --accent-lighter:#bbf7d0; --accent-strong:#22c55e; --surface-light:#f0fdf4; --text-on-light:#14532d; --border-dark:#14532d; }
+.scratch-theme .game-stage { position:relative; min-width:0; padding:0; overflow:visible; background:radial-gradient(ellipse at top,var(--bg-gradient-top) 0,var(--bg-gradient-mid) 60%,var(--bg-gradient-bot) 100%); }
+.scratch-menu-button { position:absolute; z-index:60; top:14px; left:14px; width:46px; height:46px; border:2px solid var(--accent); border-radius:50%; color:var(--accent-light); background:var(--bg-card); box-shadow:0 4px 12px rgba(0,0,0,.3); cursor:pointer; font:700 21px "ZCOOL KuaiLe",sans-serif; opacity:.42; transition:opacity .2s,transform .2s; }
+.scratch-menu-button:hover { opacity:1; transform:scale(1.08); }
+.scratch-board { position:relative; width:100%; min-height:100%; height:auto; padding:24px 20px; display:flex; align-items:flex-start; justify-content:center; overflow:visible; border:0; border-radius:0; background:transparent; box-shadow:none; }
+.scratch-frame { position:relative; width:100%; max-width:1200px; min-height:calc((100vw - 40px) * 9 / 16); overflow:hidden; border:3px solid color-mix(in srgb,var(--accent) 50%,transparent); border-radius:18px; background:radial-gradient(ellipse at top,var(--bg-gradient-top) 0,var(--bg-gradient-mid) 60%,var(--bg-gradient-bot) 100%); box-shadow:0 0 60px color-mix(in srgb,var(--accent-strong) 25%,transparent),inset 0 0 40px rgba(0,0,0,.3); }
+.scratch-inner { position:relative; z-index:10; padding:16px 24px 20px; display:flex; flex-direction:column; gap:12px; }
+.scratch-bg-deco { position:absolute; z-index:0; color:#fff; opacity:.08; pointer-events:none; line-height:1.5; }
+.scratch-hero-title-section { position:relative; flex-shrink:0; padding:0; text-align:center; line-height:1; }
+.scratch-theme h1.scratch-hero-title { display:inline-block; margin:0; color:#fff; background:linear-gradient(180deg,var(--accent-light) 0,var(--accent-strong) 100%); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-family:"ZCOOL KuaiLe","Ma Shan Zheng",sans-serif; font-size:clamp(24px,5vw,52px); font-weight:700; line-height:1.1; letter-spacing:3px; text-shadow:0 4px 20px color-mix(in srgb,var(--accent-strong) 30%,transparent); }
+.scratch-hero-subtitle { margin-top:4px; color:var(--accent-lighter); opacity:.7; font-size:clamp(10px,1.2vw,14px); line-height:1; letter-spacing:5px; }
+.scratch-title-bar { flex-shrink:0; padding:4px; border:3px solid var(--border-dark); border-radius:12px; background:linear-gradient(180deg,var(--accent) 0,var(--accent-strong) 100%); box-shadow:0 4px 20px color-mix(in srgb,var(--accent) 30%,transparent),inset 0 2px 4px rgba(255,255,255,.3); }
+.scratch-title-inner { min-height:0; padding:8px 18px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:var(--bg-card); }
+.scratch-title-inner span { max-width:100%; overflow:hidden; color:var(--accent-light); text-overflow:ellipsis; white-space:nowrap; text-align:center; font-size:18px; font-weight:700; line-height:24px; letter-spacing:.4px; }
+.scratch-controls-row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; flex-shrink:0; }
+.scratch-progress-group { min-width:150px; max-width:280px; flex:1; display:flex; align-items:center; gap:8px; color:var(--accent-light); font-size:14px; }
+.scratch-progress-group strong { color:var(--accent-light); font-size:14px; }
+.scratch-progress { flex:1; height:10px; overflow:hidden; border:2px solid var(--accent); border-radius:999px; background:var(--border-dark); box-shadow:none; }
+.scratch-progress i { display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--accent-strong),var(--accent-light)); box-shadow:none; transition:width .3s ease; }
+.scratch-buttons { display:flex; flex-wrap:wrap; gap:8px; }
+.scratch-source-button { flex-shrink:0; padding:8px 16px; border:2px solid var(--accent-light); border-radius:999px; color:var(--text-on-light); background:linear-gradient(180deg,var(--accent) 0,var(--accent-strong) 100%); box-shadow:0 3px 10px color-mix(in srgb,var(--accent-strong) 40%,transparent); cursor:pointer; font-family:inherit; font-size:14px; font-weight:700; line-height:20px; letter-spacing:1px; white-space:nowrap; transition:all .2s ease; }
+.scratch-source-button.dark { color:var(--accent); border-color:var(--accent); background:linear-gradient(180deg,var(--border-dark) 0,var(--bg-card) 100%); }
+.scratch-source-button.edit { color:#1a0d16; border-color:#fff3b0; background:linear-gradient(180deg,#ffe066 0,#fa0 100%); }
+.scratch-source-button.edit.active { border-color:#b3ffcc; background:linear-gradient(180deg,#6f9 0,#0c4 100%); }
+.scratch-source-button:hover { transform:translateY(-2px); box-shadow:0 6px 18px color-mix(in srgb,var(--accent-strong) 60%,transparent); }
+.scratch-grid { position:relative; z-index:2; min-height:0; flex:1; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); grid-template-rows:none; gap:12px; }
+.scratch-card { position:relative; width:100%; min-width:0; min-height:0; aspect-ratio:1/1.2; overflow:hidden; border:2px solid var(--accent); border-radius:10px; background:linear-gradient(180deg,var(--surface-light) 0,var(--accent-lighter) 100%); box-shadow:0 3px 10px color-mix(in srgb,var(--accent) 25%,transparent),inset 0 2px 6px rgba(255,255,255,.5); cursor:grab; touch-action:none; transition:box-shadow .4s ease,border-color .4s ease,background .4s ease; }
+.scratch-card:active { cursor:grabbing; }
+.scratch-card.revealed { cursor:default; animation:none; }
+.scratch-card .card-content { position:absolute; inset:0; z-index:1; padding:6px 5px 7px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:0; color:#fff; text-align:initial; }
+.scratch-card .card-kuromi { width:70%; height:auto; flex:1; display:flex; align-items:center; justify-content:center; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.15)); }
+.scratch-card .card-text { width:100%; min-height:28px; padding:4px 3px; border:2px solid var(--accent); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-on-dark); background:var(--bg-card); text-align:center; word-break:break-all; font-size:clamp(9px,.9vw,12px); font-weight:400; line-height:1.2; letter-spacing:.3px; }
+.scratch-card .scratch-hint { position:absolute; inset:0; z-index:1; display:flex; align-items:center; justify-content:center; color:color-mix(in srgb,var(--accent) 40%,transparent); font-size:clamp(22px,3vw,40px); font-weight:700; line-height:1.5; letter-spacing:2px; text-shadow:1px 1px 0 rgba(255,255,255,.3); pointer-events:none; }
+.scratch-card .scratch-canvas { position:absolute; inset:0; z-index:2; width:100%; height:100%; cursor:grab; touch-action:none; opacity:1; transition:opacity .4s ease; }
+.scratch-card .scratch-canvas.fade-out { opacity:0; pointer-events:none; }
+.scratch-skull { position:fixed; z-index:0; pointer-events:none; opacity:.12; filter:drop-shadow(0 0 8px color-mix(in srgb,var(--accent) 40%,transparent)); }
+.scratch-skull.skull-tl { top:20px; left:30px; width:clamp(60px,10vw,120px); }
+.scratch-skull.skull-br { right:20px; bottom:10px; width:clamp(80px,14vw,180px); opacity:.08; transform:scaleX(-1); }
+.scratch-settings-panel { position:fixed; z-index:200; top:0; right:0; width:340px; max-width:90vw; height:100vh; padding:20px; border:0; border-left:3px solid var(--accent); border-radius:0; color:#fff; background:var(--bg-card); box-shadow:-8px 0 30px rgba(0,0,0,.4); }
+.scratch-panel-title { color:var(--accent-light); font-size:18px; letter-spacing:1px; }
+.scratch-theme-options { grid-template-columns:repeat(2,1fr); }
+.scratch-theme-options button { border-color:var(--border-dark); color:var(--accent-lighter); background:var(--bg-deep); font-family:inherit; font-size:14px; }
+.scratch-edit-panel { position:fixed; z-index:210; inset:70px 120px; border-color:var(--accent); color:#fff; background:var(--bg-card); }
+

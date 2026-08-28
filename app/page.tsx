@@ -6,7 +6,7 @@ type Player = { id: number; name: string; chats: number; supports: number };
 type ChasePlayer = { id: number; name: string; normalScore: number; boostScore: number; boostTool: string };
 type TalentPlayer = { id: number; name: string; score: number };
 type GameType = 'newcomer' | 'chase' | 'duo' | 'talent' | 'scratch';
-type ScratchTheme = 'pink' | 'purple' | 'blue' | 'green';
+type ScratchTheme = 'pink' | 'purple-pink' | 'purple' | 'blue' | 'green';
 
 const scratchDefaults = [
   '指定歌单', '撒娇八连', '换头像1h', '学猫叫三声', '咬舌头说话1分钟', '说三个土味情话',
@@ -14,41 +14,64 @@ const scratchDefaults = [
   '用夹子音说话1分钟', '学三声猪叫', '指定卖汤圆', '模仿唐老鸭说话', '学三种动物叫', '指定报菜名', '谢谢惠顾',
 ];
 
-const scratchImages = scratchDefaults.map((_, index) => `kuromi-scratch/card-${String(index === 17 ? 1 : index + 1).padStart(2, '0')}.jpg`);
+const scratchImages = scratchDefaults.map((_, index) => `kuromi-scratch/card-${String(index === 17 ? 1 : index + 1).padStart(2, '0')}-web.png`);
 
 function ScratchCard({ index, text, image, resetKey, forceRevealed, onReveal }: {
   index: number; text: string; image: string; resetKey: number; forceRevealed: boolean; onReveal: (index: number) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawingRef = useRef(false);
-  const moveCountRef = useRef(0);
+  const lastPointRef = useRef({ x: 0, y: 0 });
   const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     setRevealed(false);
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const width = Math.max(1, canvas.clientWidth);
-    const height = Math.max(1, canvas.clientHeight);
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(1, rect.width);
+    const height = Math.max(1, rect.height);
     const ratio = window.devicePixelRatio || 1;
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
     const context = canvas.getContext('2d');
     if (!context) return;
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.scale(ratio, ratio);
     const gradient = context.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, '#fff8fc');
-    gradient.addColorStop(.48, '#d9ced7');
-    gradient.addColorStop(1, '#fff5fb');
+    gradient.addColorStop(0, '#d0c8cc');
+    gradient.addColorStop(.3, '#f0e8ec');
+    gradient.addColorStop(.5, '#c0b8bc');
+    gradient.addColorStop(.7, '#e8e0e4');
+    gradient.addColorStop(1, '#b8b0b4');
     context.fillStyle = gradient;
     context.fillRect(0, 0, width, height);
-    context.fillStyle = 'rgba(69,30,54,.24)';
-    context.font = '900 50px Microsoft YaHei';
+
+    context.globalAlpha = .15;
+    context.strokeStyle = '#fff';
+    context.lineWidth = 1;
+    for (let y = 0; y < height; y += 4) {
+      context.beginPath();
+      context.moveTo(0, y);
+      context.lineTo(width, y + 2);
+      context.stroke();
+    }
+    context.globalAlpha = 1;
+    context.strokeStyle = '#ff8ec4';
+    context.lineWidth = 3;
+    context.strokeRect(2, 2, width - 4, height - 4);
+
+    context.globalAlpha = .2;
+    context.fillStyle = '#ff6b9d';
+    context.font = `${Math.min(width, height) * .35}px sans-serif`;
     context.textAlign = 'center';
-    context.fillText('☠', width / 2, height / 2 - 4);
-    context.fillStyle = 'rgba(255,87,165,.72)';
-    context.font = '900 28px Microsoft YaHei';
-    context.fillText('刮开', width / 2, height / 2 + 44);
+    context.textBaseline = 'middle';
+    context.fillText('💀', width / 2, height / 2 - height * .05);
+    context.globalAlpha = .35;
+    context.fillStyle = '#ff6b9d';
+    context.font = `bold ${Math.min(width, height) * .12}px "ZCOOL KuaiLe", sans-serif`;
+    context.fillText('刮我', width / 2, height / 2 + height * .25);
+    context.globalAlpha = 1;
     context.globalCompositeOperation = 'destination-out';
   }, [resetKey]);
 
@@ -59,37 +82,55 @@ function ScratchCard({ index, text, image, resetKey, forceRevealed, onReveal }: 
     }
   }, [forceRevealed, index, onReveal, revealed]);
 
+  function point(event: ReactPointerEvent<HTMLCanvasElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
   function scratch(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (!drawingRef.current || revealed) return;
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
     if (!canvas || !context) return;
-    const rect = canvas.getBoundingClientRect();
-    const ratio = window.devicePixelRatio || 1;
-    context.save();
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    event.preventDefault();
+    const next = point(event);
     context.beginPath();
-    context.arc(event.clientX - rect.left, event.clientY - rect.top, 34, 0, Math.PI * 2);
-    context.fill();
-    context.restore();
-    moveCountRef.current += 1;
-    if (moveCountRef.current % 7 !== 0) return;
+    context.moveTo(lastPointRef.current.x, lastPointRef.current.y);
+    context.lineTo(next.x, next.y);
+    context.strokeStyle = 'rgba(0,0,0,1)';
+    context.lineWidth = Math.max(canvas.offsetWidth * .08, 18);
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.stroke();
+    lastPointRef.current = next;
+  }
+
+  function finishScratch() {
+    if (!drawingRef.current || revealed) return;
+    drawingRef.current = false;
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return;
     const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
     let transparent = 0;
-    for (let pixel = 3; pixel < pixels.length; pixel += 16) if (pixels[pixel] < 40) transparent += 1;
-    if (transparent / (pixels.length / 16) > .34) {
+    let total = 0;
+    for (let pixel = 3; pixel < pixels.length; pixel += 32) {
+      total += 1;
+      if (pixels[pixel] < 128) transparent += 1;
+    }
+    if (transparent / total >= .5) {
       setRevealed(true);
-      drawingRef.current = false;
       onReveal(index);
     }
   }
 
-  return <article className={`scratch-card ${revealed || forceRevealed ? 'revealed' : ''}`}>
-    <div className="scratch-card-content"><img src={image} alt="库洛米" /><strong>{text}</strong></div>
-    {!revealed && !forceRevealed && <canvas ref={canvasRef} aria-label={`刮开第${index + 1}张卡片`}
-      onPointerDown={(event) => { drawingRef.current = true; moveCountRef.current = 0; event.currentTarget.setPointerCapture(event.pointerId); scratch(event); }}
-      onPointerMove={scratch} onPointerUp={() => { drawingRef.current = false; }} onPointerCancel={() => { drawingRef.current = false; }} />}
-  </article>;
+  return <div className={`scratch-card ${revealed || forceRevealed ? 'revealed' : ''}`}>
+    <div className="card-content"><img className="card-kuromi" src={image} alt="库洛米" /><div className="card-text">{text}</div></div>
+    <div className="scratch-hint">?</div>
+    <canvas ref={canvasRef} className={`scratch-canvas ${revealed || forceRevealed ? 'fade-out' : ''}`} aria-label={`刮开第${index + 1}张卡片`}
+      onPointerDown={(event) => { if (revealed || forceRevealed) return; drawingRef.current = true; lastPointRef.current = point(event); event.currentTarget.setPointerCapture(event.pointerId); scratch(event); }}
+      onPointerMove={scratch} onPointerUp={finishScratch} onPointerLeave={finishScratch} onPointerCancel={finishScratch} />
+  </div>;
 }
 
 const defaultPlayers: Player[] = Array.from({ length: 8 }, (_, index) => ({
@@ -171,7 +212,7 @@ export default function Home() {
       const savedScratchRule = window.localStorage.getItem('scratch-game-rule');
       if (savedScratchRule) setScratchRule(savedScratchRule);
       const savedScratchTheme = window.localStorage.getItem('scratch-game-theme') as ScratchTheme | null;
-      if (savedScratchTheme && ['pink', 'purple', 'blue', 'green'].includes(savedScratchTheme)) setScratchTheme(savedScratchTheme);
+      if (savedScratchTheme && ['pink', 'purple-pink', 'purple', 'blue', 'green'].includes(savedScratchTheme)) setScratchTheme(savedScratchTheme);
     } catch {
       // 本地记录不可用时继续使用空白表，不影响现场计分。
     }
@@ -205,6 +246,11 @@ export default function Home() {
     }, 1000);
     return () => window.clearInterval(timerId);
   }, [isTimerRunning]);
+
+  useEffect(() => {
+    document.body.classList.toggle('scratch-page', activeGame === 'scratch');
+    return () => document.body.classList.remove('scratch-page');
+  }, [activeGame]);
 
   const scores = useMemo(() => players.map((player) => player.chats * 2 + player.supports * 10), [players]);
   const visiblePlayers = players.slice(0, visibleCount);
@@ -326,7 +372,7 @@ export default function Home() {
       </aside>
 
       <section className="game-stage">
-        <header className="topbar">
+        {activeGame !== 'scratch' ? <header className="topbar">
           <div className="title-group">
             {!gameMenuOpen && <button className="choose-game-button" type="button" onClick={() => setGameMenuOpen(true)} aria-label="打开游戏选择菜单">☰ <span>选择游戏</span></button>}
             <div><p className="eyebrow">{gameEyebrow}</p><h1>{gameTitle}</h1></div>
@@ -358,25 +404,45 @@ export default function Home() {
             </>}
             {activeGame !== 'duo' && activeGame !== 'scratch' && <button className="reset-button" type="button" onClick={resetGame}>重开一局</button>}
           </div>
-        </header>
+        </header> : !gameMenuOpen ? <button className="scratch-menu-button" type="button" onClick={() => setGameMenuOpen(true)} aria-label="打开游戏选择菜单">☰</button> : null}
 
         {activeGame === 'scratch' ? <div className="scratch-board">
-          <div className="scratch-decor decor-one">☠</div><div className="scratch-decor decor-two">✦</div><div className="scratch-decor decor-three">♡</div>
-          <div className="scratch-rule-banner">{scratchRule}</div>
-          <div className="scratch-progress-row">
-            <span>已刮开</span><div className="scratch-progress"><i style={{ width: `${scratchRevealed.length / scratchDefaults.length * 100}%` }} /></div>
-            <strong>{scratchRevealed.length} / {scratchDefaults.length}</strong><em>按住卡片来回刮动</em>
+          <div className="scratch-frame">
+            <div className="scratch-bg-deco" style={{ top: '10%', left: '5%', fontSize: 55 }}>♡</div>
+            <div className="scratch-bg-deco" style={{ top: '30%', right: '8%', fontSize: 40 }}>✦</div>
+            <div className="scratch-bg-deco" style={{ top: '60%', left: '12%', fontSize: 45 }}>🎀</div>
+            <div className="scratch-bg-deco" style={{ top: '80%', right: '15%', fontSize: 50 }}>♡</div>
+            <div className="scratch-bg-deco" style={{ top: '20%', left: '40%', fontSize: 28 }}>✧</div>
+            <div className="scratch-bg-deco" style={{ top: '50%', right: '40%', fontSize: 35 }}>🎀</div>
+            <div className="scratch-bg-deco" style={{ top: '75%', left: '35%', fontSize: 24 }}>✦</div>
+            <div className="scratch-bg-deco" style={{ top: '35%', left: '70%', fontSize: 30 }}>✧</div>
+            <div className="scratch-inner">
+              <section className="scratch-hero-title-section"><h1 className="scratch-hero-title">库洛米刮刮乐</h1><div className="scratch-hero-subtitle">KUROMI SCRATCH CARD</div></section>
+              <header className="scratch-title-bar"><div className="scratch-title-inner"><span>{scratchRule}</span></div></header>
+              <div className="scratch-controls-row">
+                <div className="scratch-progress-group"><span>已刮开</span><div className="scratch-progress"><i style={{ width: `${scratchRevealed.length / scratchDefaults.length * 100}%` }} /></div><strong>{scratchRevealed.length} / {scratchDefaults.length}</strong></div>
+                <div className="scratch-buttons">
+                  <button className="scratch-source-button dark" type="button" onClick={() => setScratchThemeOpen((open) => !open)}>⚙ 主题设置</button>
+                  <button className={`scratch-source-button edit ${scratchEditing ? 'active' : ''}`} type="button" onClick={() => setScratchEditing((editing) => !editing)}>{scratchEditing ? '✓ 完成编辑' : '✎ 编辑'}</button>
+                  <button className="scratch-source-button dark" type="button" onClick={() => { setScratchRevealAll(true); setScratchRevealed(scratchDefaults.map((_, index) => index)); }}>全部刮开</button>
+                  <button className="scratch-source-button" type="button" onClick={restartScratchGame}>重新开始</button>
+                </div>
+              </div>
+              <section className="scratch-grid" aria-label="库洛米刮刮乐卡片区">
+                {scratchTexts.map((text, index) => <ScratchCard key={`${index}-${scratchResetKey}`} index={index} text={text} image={scratchImages[index]}
+                  resetKey={scratchResetKey} forceRevealed={scratchRevealAll} onReveal={recordScratchReveal} />)}
+              </section>
+            </div>
           </div>
-          <section className="scratch-grid" aria-label="库洛米刮刮乐卡片区">
-            {scratchTexts.map((text, index) => <ScratchCard key={`${index}-${scratchResetKey}`} index={index} text={text} image={scratchImages[index]}
-              resetKey={scratchResetKey} forceRevealed={scratchRevealAll} onReveal={recordScratchReveal} />)}
-          </section>
+
+          <svg className="scratch-skull skull-tl" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="scratchSkull1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="var(--accent-light)"/><stop offset="100%" stopColor="var(--accent-strong)"/></linearGradient></defs><path d="M50 8 C25 8 8 26 8 48 C8 63 16 76 28 83 L28 90 C28 93 31 96 34 96 L40 96 C43 96 46 93 46 90 L46 86 L54 86 L54 90 C54 93 57 96 60 96 L66 96 C69 96 72 93 72 90 L72 83 C84 76 92 63 92 48 C92 26 75 8 50 8 Z" fill="url(#scratchSkull1)"/><ellipse cx="34" cy="46" rx="11" ry="12" fill="var(--bg-card)"/><ellipse cx="66" cy="46" rx="11" ry="12" fill="var(--bg-card)"/><path d="M50 56 L45 66 L55 66 Z" fill="var(--bg-card)"/><rect x="30" y="74" width="5" height="8" rx="2" fill="var(--bg-card)"/><rect x="40" y="74" width="5" height="8" rx="2" fill="var(--bg-card)"/><rect x="50" y="74" width="5" height="8" rx="2" fill="var(--bg-card)"/><rect x="60" y="74" width="5" height="8" rx="2" fill="var(--bg-card)"/></svg>
+          <svg className="scratch-skull skull-br" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="scratchSkull2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="var(--accent-light)"/><stop offset="100%" stopColor="var(--accent-strong)"/></linearGradient></defs><path d="M50 8 C25 8 8 26 8 48 C8 63 16 76 28 83 L28 90 C28 93 31 96 34 96 L40 96 C43 96 46 93 46 90 L46 86 L54 86 L54 90 C54 93 57 96 60 96 L66 96 C69 96 72 93 72 90 L72 83 C84 76 92 63 92 48 C92 26 75 8 50 8 Z" fill="url(#scratchSkull2)"/><ellipse cx="34" cy="46" rx="11" ry="12" fill="var(--bg-card)"/><ellipse cx="66" cy="46" rx="11" ry="12" fill="var(--bg-card)"/><path d="M50 56 L45 66 L55 66 Z" fill="var(--bg-card)"/><rect x="30" y="74" width="5" height="8" rx="2" fill="var(--bg-card)"/><rect x="40" y="74" width="5" height="8" rx="2" fill="var(--bg-card)"/><rect x="50" y="74" width="5" height="8" rx="2" fill="var(--bg-card)"/><rect x="60" y="74" width="5" height="8" rx="2" fill="var(--bg-card)"/></svg>
 
           {scratchThemeOpen && <aside className="scratch-settings-panel">
             <div className="scratch-panel-title"><strong>🎨 主题设置</strong><button type="button" onClick={() => setScratchThemeOpen(false)}>×</button></div>
             <p>预设主题</p>
             <div className="scratch-theme-options">
-              {([['pink', '紫粉'], ['purple', '紫色'], ['blue', '蓝白'], ['green', '绿白']] as [ScratchTheme, string][]).map(([value, label]) =>
+              {([['pink', '粉色'], ['purple-pink', '紫粉'], ['purple', '紫色'], ['blue', '蓝白'], ['green', '绿白']] as [ScratchTheme, string][]).map(([value, label]) =>
                 <button className={scratchTheme === value ? 'selected' : ''} type="button" key={value} onClick={() => setScratchTheme(value)}><i />{label}</button>)}
             </div>
             <p className="scratch-panel-tip">主题会自动保存到本机，下次打开继续使用。</p>
