@@ -563,3 +563,16 @@ h1,.duo-theme h1 { font-size:92px; }
 .rules-card li { min-height:46px; }
 .formula { margin-top:7px; padding-top:7px; line-height:1.35; }
 
+/* 才艺考核：为“距满条 1000 分”保留完整宽度，避免与人气分减号重叠 */
+.talent-progress-wrap {
+  min-width:0;
+  padding-right:8px;
+  grid-template-columns:minmax(100px,1fr) 190px;
+  gap:16px;
+}
+.talent-progress-wrap small {
+  min-width:190px;
+  overflow:hidden;
+  text-align:right;
+}
+
