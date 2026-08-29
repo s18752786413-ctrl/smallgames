@@ -248,6 +248,7 @@ h1 { margin:0; font-family:Georgia,"Microsoft YaHei",serif; font-size:clamp(38px
 .talent-flow-card ol { margin:11px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 10px; list-style:none; }
 .talent-flow-card li { min-width:0; display:flex; align-items:center; gap:8px; color:#fff0e7; font-size:11px; font-weight:900; line-height:1.25; }
 .talent-flow-card li b { width:26px; height:26px; flex:0 0 26px; border-radius:50%; display:grid; place-items:center; color:#671039; background:linear-gradient(145deg,#fff4cd,#f2bd58); font-family:Georgia,serif; font-size:14px; }
+.talent-flow-card li:last-child { grid-column:1/-1; justify-content:center; }
 .talent-rules-card { min-height:0; padding:16px; overflow:hidden; }
 .talent-route { margin-top:11px; padding:11px 12px; border:1px solid rgba(255,218,149,.22); border-radius:14px; background:rgba(255,255,255,.035); }
 .talent-route h2 { margin:0 0 6px; color:#ffd879; font-size:15px; }

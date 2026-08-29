@@ -514,8 +514,9 @@ export default function Home() {
               <ol>
                 <li><b>1</b><span>主持介绍规则</span></li>
                 <li><b>2</b><span>轮流展示才艺</span></li>
-                <li><b>3</b><span>轮麦介绍、给自己要票</span></li>
-                <li><b>4</b><span>主持帮忙要票</span></li>
+                <li><b>3</b><span>上一轮时长短或者不是特别优质的补充二次展示</span></li>
+                <li><b>4</b><span>轮麦介绍、给自己要票</span></li>
+                <li><b>5</b><span>主持帮忙要票</span></li>
               </ol>
             </section>
 
