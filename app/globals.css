@@ -201,6 +201,20 @@ h1 { margin:0; font-family:Georgia,"Microsoft YaHei",serif; font-size:clamp(38px
 .talent-theme .rule-chip b { color:#ffd778; }
 .talent-theme .talent-pop-chip b { color:#ff92ba; }
 .talent-theme .reset-button { color:#691137; background:linear-gradient(135deg,#fff3c8,#eeb855); box-shadow:0 8px 24px rgba(22,0,10,.34); }
+.talent-header-timer { width:430px; height:88px; padding:8px 10px; border:2px solid rgba(255,210,127,.62); border-radius:18px; display:grid; grid-template-columns:150px minmax(0,1fr); align-items:center; gap:10px; color:#fff4d3; background:linear-gradient(145deg,rgba(91,12,49,.94),rgba(43,4,25,.94)); box-shadow:0 9px 26px rgba(22,0,10,.38),inset 0 0 22px rgba(255,205,132,.06); }
+.talent-timer-clock { font-family:Georgia,serif; font-size:48px; line-height:1; font-weight:900; text-align:center; font-variant-numeric:tabular-nums; letter-spacing:1px; }
+.talent-timer-clock i { margin:0 2px; color:#ff8fbd; font-style:normal; }
+.talent-timer-panel { min-width:0; display:grid; gap:6px; }
+.talent-timer-settings,.talent-timer-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.talent-timer-settings label { height:30px; padding:0 7px; border:1px solid rgba(255,211,136,.35); border-radius:8px; display:flex; align-items:center; background:rgba(255,255,255,.07); }
+.talent-timer-settings input { width:100%; min-width:0; border:0; outline:0; color:#fff4d3; background:transparent; text-align:center; font-size:19px; font-weight:900; -moz-appearance:textfield; }
+.talent-timer-settings input::-webkit-inner-spin-button,.talent-timer-settings input::-webkit-outer-spin-button { margin:0; -webkit-appearance:none; }
+.talent-timer-settings span { color:#efbfd1; font-size:15px; font-weight:800; }
+.talent-timer-actions button { height:30px; border:1px solid rgba(255,211,136,.55); border-radius:8px; color:#651037; background:linear-gradient(135deg,#fff1c3,#eeb652); cursor:pointer; font-size:17px; font-weight:900; }
+.talent-timer-actions button:last-child { color:#ffe0eb; background:rgba(255,255,255,.07); }
+.talent-timer-actions button:disabled { opacity:.45; cursor:not-allowed; }
+.talent-header-timer.timer-done { border-color:#ff7bab; animation:timer-alert 1s ease-in-out infinite alternate; }
+.talent-header-timer.timer-done .talent-timer-clock { color:#ff8fbd; }
 
 .talent-board { height:calc(100% - 80px); min-height:0; display:grid; grid-template-columns:minmax(650px,1fr) 326px; gap:18px; }
 .talent-ranking { min-width:0; min-height:0; overflow:hidden; border:1px solid rgba(255,214,142,.5); border-radius:24px; background:linear-gradient(145deg,rgba(75,10,41,.84),rgba(33,5,22,.88)); box-shadow:inset 0 0 45px rgba(255,172,205,.05),0 20px 55px rgba(18,0,10,.38); backdrop-filter:blur(9px); }

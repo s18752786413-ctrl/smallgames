@@ -405,9 +405,19 @@ export default function Home() {
               <button className="scratch-action" type="button" onClick={() => { setScratchRevealAll(true); setScratchRevealed(scratchDefaults.map((_, index) => index)); }}>全部刮开</button>
               <button className="scratch-action restart" type="button" onClick={restartScratchGame}>重新开始</button>
             </> : activeGame === 'talent' ? <>
-              <div className="rule-chip talent-skill-chip"><b>功底</b> 四级定级</div>
-              <div className="rule-chip talent-pop-chip"><b>人气</b> TOP3</div>
-              <button className="reset-button" type="button" onClick={resetGame}>重开一轮</button>
+              <div className={`talent-header-timer ${remainingSeconds === 0 ? 'timer-done' : ''}`}>
+                <div className="talent-timer-clock">{timerDisplayMinutes}<i>:</i>{timerDisplaySeconds}</div>
+                <div className="talent-timer-panel">
+                  <div className="talent-timer-settings">
+                    <label><input aria-label="才艺考核倒计时分钟" type="number" min="0" max="99" value={timerMinutes} disabled={isTimerRunning} onChange={(event) => updateTimer(Number(event.target.value), timerSeconds)} /><span>分</span></label>
+                    <label><input aria-label="才艺考核倒计时秒钟" type="number" min="0" max="59" value={timerSeconds} disabled={isTimerRunning} onChange={(event) => updateTimer(timerMinutes, Number(event.target.value))} /><span>秒</span></label>
+                  </div>
+                  <div className="talent-timer-actions">
+                    <button type="button" onClick={toggleTimer} disabled={configuredTimerSeconds === 0}>{isTimerRunning ? '暂停' : remainingSeconds > 0 && remainingSeconds < configuredTimerSeconds ? '继续' : '开始'}</button>
+                    <button type="button" onClick={resetTimer}>重置</button>
+                  </div>
+                </div>
+              </div>
             </> : activeGame === 'duo' ? <>
               <div className="rule-chip duo-support-chip"><b>＋10s</b> 支持</div>
               <div className="rule-chip duo-stomp-chip"><b>−10s</b> 猛踩</div>
