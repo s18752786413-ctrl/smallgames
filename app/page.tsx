@@ -509,6 +509,16 @@ export default function Home() {
               <p>达到1000分后进入TOP3，分数可继续累计</p>
             </section>
 
+            <section className="talent-flow-card">
+              <div className="talent-card-title"><span>才艺考核流程</span><em>PROCESS</em></div>
+              <ol>
+                <li><b>1</b><span>主持介绍规则</span></li>
+                <li><b>2</b><span>轮流展示才艺</span></li>
+                <li><b>3</b><span>轮麦介绍、给自己要票</span></li>
+                <li><b>4</b><span>主持帮忙要票</span></li>
+              </ol>
+            </section>
+
             <section className="talent-rules-card">
               <div className="talent-card-title"><span>考核路线</span><em>RULES</em></div>
               <div className="talent-route skill-route"><h2>功底路线</h2><p>夯，人上人，NPC，拉。（后台评审公布）。</p><strong>人上人+夯 上大头。</strong></div>
